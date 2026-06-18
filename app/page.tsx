@@ -1,66 +1,116 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from 'next/link'
+import { IconShirt, IconSunglasses, IconHeadphones } from '@tabler/icons-react'
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <section style={{
+        background: 'var(--negro)',
+        padding: '40px 24px 0',
+        textAlign: 'center',
+      }}>
+        <p style={{
+          fontFamily: 'Barlow Condensed, sans-serif',
+          fontSize: '15px',
+          fontWeight: 700,
+          letterSpacing: '4px',
+          color: 'var(--amarillo)',
+          textTransform: 'uppercase',
+          marginBottom: '16px',
+        }}>
+          Ropa · Complementos · Electrónica
+        </p>
+
+        <h1 style={{
+          fontFamily: 'Barlow Condensed, sans-serif',
+          fontWeight: 900,
+          fontSize: '100px',
+          lineHeight: 0.88,
+          color: '#fff',
+          letterSpacing: '-2px',
+        }}>
+          CALIDAD<br />
+          <span style={{ color: 'var(--amarillo)' }}>TRIPLE A</span>
+        </h1>
+
+        <div style={{
+          width: '80px',
+          height: '5px',
+          background: 'var(--amarillo)',
+          margin: '24px auto 18px',
+          borderRadius: '2px',
+        }} />
+
+        <p style={{
+          fontFamily: 'Barlow Condensed, sans-serif',
+          fontSize: '16px',
+          color: '#666',
+          letterSpacing: '4px',
+          textTransform: 'uppercase',
+          marginBottom: '32px',
+        }}>
+          Al mejor precio
+        </p>
+
+        <div style={{ display: 'flex', borderTop: '1px solid #222' }}>
+          {[
+            { label: 'Ropa', icon: <IconShirt size={28} stroke={1.5} color="#FFD600" /> },
+            { label: 'Complementos', icon: <IconSunglasses size={28} stroke={1.5} color="#FFD600" /> },
+            { label: 'Electrónica', icon: <IconHeadphones size={28} stroke={1.5} color="#FFD600" /> },
+          ].map((cat, i) => (
+            <Link href="/catalogo" key={i} style={{
+              flex: 1,
+              padding: '24px 12px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              borderRight: i < 2 ? '1px solid #222' : 'none',
+              textDecoration: 'none',
+            }}>
+              {cat.icon}
+              <span style={{
+                fontFamily: 'Barlow Condensed, sans-serif',
+                fontWeight: 700,
+                fontSize: '13px',
+                letterSpacing: '2px',
+                textTransform: 'uppercase',
+                color: 'var(--amarillo)',
+              }}>{cat.label}</span>
+            </Link>
+          ))}
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+      </section>
+
+      <div style={{
+        background: 'var(--amarillo)',
+        padding: '12px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        flexWrap: 'wrap',
+      }}>
+        {[
+          { text: 'Calidad AAA', icon: <IconShirt size={18} stroke={1.8} color="#111" /> },
+          { text: 'Envío rápido', icon: <IconHeadphones size={18} stroke={1.8} color="#111" /> },
+          { text: 'Pedido por WhatsApp', icon: <IconSunglasses size={18} stroke={1.8} color="#111" /> },
+        ].map((item, i) => (
+          <span key={i} style={{
+            fontFamily: 'Barlow Condensed, sans-serif',
+            fontWeight: 700,
+            fontSize: '13px',
+            letterSpacing: '1px',
+            textTransform: 'uppercase',
+            color: 'var(--negro)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '7px',
+          }}>
+            {item.icon} {item.text}
+          </span>
+        ))}
+      </div>
+    </>
+  )
 }
