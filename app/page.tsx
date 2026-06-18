@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { IconShirt, IconSunglasses, IconHeadphones } from '@tabler/icons-react'
+import { IconShirt, IconSunglasses, IconHeadphones, IconRosette, IconTruckDelivery, IconBrandWhatsapp } from '@tabler/icons-react'
 
 export default function Home() {
   return (
@@ -52,7 +52,7 @@ export default function Home() {
           Al mejor precio
         </p>
 
-        <div style={{ display: 'flex', borderTop: '1px solid #222' }}>
+        <div style={{ display: 'flex', borderTop: '2px solid #444' }}>
           {[
             { label: 'Ropa', icon: <IconShirt size={28} stroke={1.5} color="#FFD600" /> },
             { label: 'Complementos', icon: <IconSunglasses size={28} stroke={1.5} color="#FFD600" /> },
@@ -66,7 +66,7 @@ export default function Home() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              borderRight: i < 2 ? '1px solid #222' : 'none',
+              borderRight: i < 2 ? '2px solid #444' : 'none',
               textDecoration: 'none',
             }}>
               {cat.icon}
@@ -92,9 +92,9 @@ export default function Home() {
         flexWrap: 'wrap',
       }}>
         {[
-          { text: 'Calidad AAA', icon: <IconShirt size={18} stroke={1.8} color="#111" /> },
-          { text: 'Envío rápido', icon: <IconHeadphones size={18} stroke={1.8} color="#111" /> },
-          { text: 'Pedido por WhatsApp', icon: <IconSunglasses size={18} stroke={1.8} color="#111" /> },
+          { text: 'Calidad AAA', icon: <IconRosette size={18} stroke={1.8} color="#111" /> },
+          { text: 'Envío rápido', icon: <IconTruckDelivery size={18} stroke={1.8} color="#111" /> },
+          { text: 'Pedido por WhatsApp', icon: <IconBrandWhatsapp size={18} stroke={1.8} color="#111" /> },
         ].map((item, i) => (
           <span key={i} style={{
             fontFamily: 'Barlow Condensed, sans-serif',

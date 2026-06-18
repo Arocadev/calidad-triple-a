@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useCartStore } from '@/store/cartStore'
 import { useRouter } from 'next/navigation'
+import jsPDF from 'jspdf'
 
 export default function Pedido() {
   const { items, clearCart } = useCartStore()
@@ -13,6 +14,71 @@ export default function Pedido() {
   const [enviado, setEnviado] = useState(false)
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+
+  const generarPDF = () => {
+    const doc = new jsPDF()
+
+    doc.setFillColor(17, 17, 17)
+    doc.rect(0, 0, 210, 30, 'F')
+
+    doc.setTextColor(255, 214, 0)
+    doc.setFontSize(22)
+    doc.setFont('helvetica', 'bold')
+    doc.text('CALIDAD TRIPLE A', 105, 18, { align: 'center' })
+
+    doc.setTextColor(17, 17, 17)
+    doc.setFontSize(14)
+    doc.text('RESUMEN DEL PEDIDO', 105, 42, { align: 'center' })
+
+    doc.setFontSize(11)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(80, 80, 80)
+    doc.text(`Cliente: ${nombre}`, 20, 56)
+    doc.text(`Teléfono: ${telefono}`, 20, 64)
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, 20, 72)
+
+    doc.setDrawColor(229, 229, 229)
+    doc.line(20, 78, 190, 78)
+
+    let y = 90
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(17, 17, 17)
+    doc.text('Producto', 20, y)
+    doc.text('Talla', 120, y)
+    doc.text('Uds.', 150, y)
+    doc.text('Precio', 175, y)
+
+    doc.line(20, y + 4, 190, y + 4)
+    y += 14
+
+    doc.setFont('helvetica', 'normal')
+    items.forEach(item => {
+      doc.text(`${item.name} (${item.brand})`, 20, y)
+      doc.text(item.size, 120, y)
+      doc.text(`x${item.quantity}`, 150, y)
+      doc.text(`${(item.price * item.quantity).toFixed(0)}€`, 175, y)
+      y += 10
+    })
+
+    doc.line(20, y + 2, 190, y + 2)
+    y += 12
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(14)
+    doc.setTextColor(17, 17, 17)
+    doc.text('TOTAL', 20, y)
+    doc.setFillColor(17, 17, 17)
+    doc.rect(160, y - 8, 30, 12, 'F')
+    doc.setTextColor(255, 214, 0)
+    doc.text(`${total.toFixed(0)}€`, 175, y, { align: 'center' })
+
+    doc.setTextColor(150, 150, 150)
+    doc.setFontSize(9)
+    doc.setFont('helvetica', 'normal')
+    doc.text('El pago se gestiona por Bizum o PayPal. En breve nos pondremos en contacto contigo.', 105, 280, { align: 'center' })
+
+    return doc
+  }
 
   const handlePedido = async () => {
     if (!nombre || !telefono) return
@@ -27,6 +93,8 @@ export default function Pedido() {
 
       if (res.ok) {
         const data = await res.json()
+        const doc = generarPDF()
+        doc.save(`pedido-${nombre.replace(' ', '-')}-${Date.now()}.pdf`)
         setEnviado(true)
         clearCart()
         window.open(data.whatsappUrl, '_blank')
@@ -70,7 +138,7 @@ export default function Pedido() {
           color: '#666',
           maxWidth: '340px',
         }}>
-          Carlito se pondrá en contacto contigo para confirmar el pago por Bizum o PayPal.
+          En breve nos pondremos en contacto contigo para confirmar el pago por Bizum o PayPal.
         </p>
         <button
           onClick={() => router.push('/')}

@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IconShirt, IconSunglasses, IconHeadphones, IconShoe, IconDeviceWatch } from '@tabler/icons-react'
 import { useCartStore } from '@/store/cartStore'
+import Toast from '@/app/components/Toast'
+import SkeletonCard from '@/app/components/SkeletonCard'
 
 const CATEGORIAS = ['Todo', 'Zapatillas', 'Camisetas', 'Gorras', 'Complementos', 'Electrónica']
 const GENEROS = ['Todo', 'Masculino', 'Femenino']
@@ -21,7 +23,15 @@ export default function Catalogo() {
   const [genero, setGenero] = useState('Todo')
   const [filtroAbierto, setFiltroAbierto] = useState(false)
   const [tallasAbiertas, setTallasAbiertas] = useState<string | null>(null)
+  const [toastVisible, setToastVisible] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
+  const [cargando, setCargando] = useState(true)
   const addItem = useCartStore(state => state.addItem)
+
+  useEffect(() => {
+    const t = setTimeout(() => setCargando(false), 800)
+    return () => clearTimeout(t)
+  }, [])
 
   const filtrados = productos.filter(p => {
     const matchCat = categoria === 'Todo' || p.categoria === categoria
@@ -39,6 +49,8 @@ export default function Catalogo() {
       quantity: 1,
     })
     setTallasAbiertas(null)
+    setToastMsg(`${p.nombre} añadido`)
+    setToastVisible(prev => !prev)
   }
 
   return (
@@ -160,7 +172,9 @@ export default function Catalogo() {
         gap: '16px',
         padding: '24px',
       }}>
-        {filtrados.map(p => (
+        {cargando
+          ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+          : filtrados.map(p => (
           <div key={p.id} style={{
             background: '#fff',
             border: '1px solid #e5e5e5',
@@ -264,6 +278,8 @@ export default function Catalogo() {
           </div>
         ))}
       </div>
+
+      <Toast mensaje={toastMsg} visible={toastVisible} />
     </div>
   )
 }
