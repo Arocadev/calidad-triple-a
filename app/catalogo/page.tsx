@@ -2,29 +2,44 @@
 
 import { useState } from 'react'
 import { IconShirt, IconSunglasses, IconHeadphones, IconShoe, IconDeviceWatch } from '@tabler/icons-react'
+import { useCartStore } from '@/store/cartStore'
 
 const CATEGORIAS = ['Todo', 'Zapatillas', 'Camisetas', 'Gorras', 'Complementos', 'Electrónica']
 const GENEROS = ['Todo', 'Masculino', 'Femenino']
 
 const productos = [
-  { id: '1', nombre: 'Air Max 90', marca: 'Nike', precio: 89, categoria: 'Zapatillas', genero: 'Masculino', icon: <IconShoe size={36} stroke={1.5} color="#bbb" /> },
-  { id: '2', nombre: 'Camiseta Essential', marca: 'Adidas', precio: 24, categoria: 'Camisetas', genero: 'Unisex', icon: <IconShirt size={36} stroke={1.5} color="#bbb" /> },
-  { id: '3', nombre: 'Auriculares BT', marca: 'JBL', precio: 45, categoria: 'Electrónica', genero: 'Unisex', icon: <IconHeadphones size={36} stroke={1.5} color="#bbb" /> },
-  { id: '4', nombre: 'Gorra Snapback', marca: 'New Era', precio: 32, categoria: 'Gorras', genero: 'Masculino', icon: <span style={{fontSize:'36px'}}>🧢</span> },
-  { id: '5', nombre: 'Gafas de sol', marca: 'Ray-Ban', precio: 55, categoria: 'Complementos', genero: 'Unisex', icon: <IconSunglasses size={36} stroke={1.5} color="#bbb" /> },
-  { id: '6', nombre: 'Reloj deportivo', marca: 'Casio', precio: 38, categoria: 'Electrónica', genero: 'Masculino', icon: <IconDeviceWatch size={36} stroke={1.5} color="#bbb" /> },
+  { id: '1', nombre: 'Air Max 90', marca: 'Nike', precio: 89, categoria: 'Zapatillas', genero: 'Masculino', tallas: ['39', '40', '41', '42', '43', '44'], icon: <IconShoe size={36} stroke={1.5} color="#bbb" /> },
+  { id: '2', nombre: 'Camiseta Essential', marca: 'Adidas', precio: 24, categoria: 'Camisetas', genero: 'Unisex', tallas: ['XS', 'S', 'M', 'L', 'XL'], icon: <IconShirt size={36} stroke={1.5} color="#bbb" /> },
+  { id: '3', nombre: 'Auriculares BT', marca: 'JBL', precio: 45, categoria: 'Electrónica', genero: 'Unisex', tallas: ['Única'], icon: <IconHeadphones size={36} stroke={1.5} color="#bbb" /> },
+  { id: '4', nombre: 'Gorra Snapback', marca: 'New Era', precio: 32, categoria: 'Gorras', genero: 'Masculino', tallas: ['Única'], icon: <span style={{fontSize:'36px'}}>🧢</span> },
+  { id: '5', nombre: 'Gafas de sol', marca: 'Ray-Ban', precio: 55, categoria: 'Complementos', genero: 'Unisex', tallas: ['Única'], icon: <IconSunglasses size={36} stroke={1.5} color="#bbb" /> },
+  { id: '6', nombre: 'Reloj deportivo', marca: 'Casio', precio: 38, categoria: 'Electrónica', genero: 'Masculino', tallas: ['Única'], icon: <IconDeviceWatch size={36} stroke={1.5} color="#bbb" /> },
 ]
 
 export default function Catalogo() {
   const [categoria, setCategoria] = useState('Todo')
   const [genero, setGenero] = useState('Todo')
   const [filtroAbierto, setFiltroAbierto] = useState(false)
+  const [tallasAbiertas, setTallasAbiertas] = useState<string | null>(null)
+  const addItem = useCartStore(state => state.addItem)
 
   const filtrados = productos.filter(p => {
     const matchCat = categoria === 'Todo' || p.categoria === categoria
     const matchGen = genero === 'Todo' || p.genero === genero || p.genero === 'Unisex'
     return matchCat && matchGen
   })
+
+  const handleAnadir = (p: typeof productos[0], talla: string) => {
+    addItem({
+      id: p.id,
+      name: p.nombre,
+      brand: p.marca,
+      price: p.precio,
+      size: talla,
+      quantity: 1,
+    })
+    setTallasAbiertas(null)
+  }
 
   return (
     <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
@@ -152,9 +167,10 @@ export default function Catalogo() {
             borderRadius: '6px',
             overflow: 'hidden',
             cursor: 'pointer',
+            position: 'relative',
           }}
             onMouseEnter={e => (e.currentTarget.style.borderColor = '#FFD600')}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = '#e5e5e5')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = tallasAbiertas === p.id ? '#FFD600' : '#e5e5e5')}
           >
             <div style={{
               background: '#f5f5f5',
@@ -182,27 +198,68 @@ export default function Catalogo() {
                 color: '#111',
                 marginBottom: '10px',
               }}>{p.nombre}</div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{
-                  fontFamily: 'Barlow Condensed, sans-serif',
-                  fontWeight: 900,
-                  fontSize: '22px',
-                  color: '#111',
-                }}>{p.precio}€</span>
-                <button style={{
-                  background: '#111',
-                  color: '#FFD600',
-                  border: 'none',
-                  borderRadius: '3px',
-                  fontFamily: 'Barlow Condensed, sans-serif',
-                  fontWeight: 900,
-                  fontSize: '12px',
-                  letterSpacing: '1px',
-                  padding: '6px 12px',
-                  cursor: 'pointer',
-                  textTransform: 'uppercase',
-                }}>+ Añadir</button>
-              </div>
+
+              {tallasAbiertas === p.id ? (
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <p style={{
+                      fontFamily: 'Barlow Condensed, sans-serif',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      letterSpacing: '2px',
+                      color: '#999',
+                      textTransform: 'uppercase',
+                      margin: 0,
+                    }}>Elige talla</p>
+                    <button onClick={() => setTallasAbiertas(null)} style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#bbb',
+                      fontSize: '16px',
+                      cursor: 'pointer',
+                      padding: 0,
+                      lineHeight: 1,
+                    }}>✕</button>
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {p.tallas.map(t => (
+                      <button key={t} onClick={() => handleAnadir(p, t)} style={{
+                        background: '#111',
+                        color: '#FFD600',
+                        border: 'none',
+                        borderRadius: '3px',
+                        fontFamily: 'Barlow Condensed, sans-serif',
+                        fontWeight: 700,
+                        fontSize: '12px',
+                        padding: '5px 10px',
+                        cursor: 'pointer',
+                      }}>{t}</button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{
+                    fontFamily: 'Barlow Condensed, sans-serif',
+                    fontWeight: 900,
+                    fontSize: '22px',
+                    color: '#111',
+                  }}>{p.precio}€</span>
+                  <button onClick={() => setTallasAbiertas(p.id)} style={{
+                    background: '#111',
+                    color: '#FFD600',
+                    border: 'none',
+                    borderRadius: '3px',
+                    fontFamily: 'Barlow Condensed, sans-serif',
+                    fontWeight: 900,
+                    fontSize: '12px',
+                    letterSpacing: '1px',
+                    padding: '6px 12px',
+                    cursor: 'pointer',
+                    textTransform: 'uppercase',
+                  }}>+ Añadir</button>
+                </div>
+              )}
             </div>
           </div>
         ))}
