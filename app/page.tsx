@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { IconShirt, IconSunglasses, IconHeadphones, IconRosette, IconTruckDelivery, IconBrandWhatsapp } from '@tabler/icons-react'
+import { IconShirt, IconSunglasses, IconRosette, IconTruckDelivery, IconBrandWhatsapp } from '@tabler/icons-react'
 
 export default function Home() {
   return (
@@ -18,7 +18,7 @@ export default function Home() {
           textTransform: 'uppercase',
           marginBottom: '16px',
         }}>
-          Ropa · Complementos · Electrónica
+          Ropa · Complementos
         </p>
 
         <h1 className="hero-title" style={{
@@ -52,34 +52,41 @@ export default function Home() {
           Al mejor precio
         </p>
 
-        <div className="hero-cats" style={{ display: 'flex', borderTop: '2px solid #444' }}>
-          {[
-            { label: 'Ropa', icon: <IconShirt size={28} stroke={1.5} color="#FFD600" /> },
-            { label: 'Complementos', icon: <IconSunglasses size={28} stroke={1.5} color="#FFD600" /> },
-            { label: 'Electrónica', icon: <IconHeadphones size={28} stroke={1.5} color="#FFD600" /> },
-          ].map((cat, i) => (
-            <Link href="/catalogo" key={i} style={{
-              flex: 1,
-              padding: '24px 12px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              borderRight: i < 2 ? '2px solid #444' : 'none',
-              textDecoration: 'none',
-            }}>
-              {cat.icon}
-              <span style={{
-                fontFamily: 'Barlow Condensed, sans-serif',
-                fontWeight: 700,
-                fontSize: '13px',
-                letterSpacing: '2px',
-                textTransform: 'uppercase',
-                color: 'var(--amarillo)',
-              }}>{cat.label}</span>
-            </Link>
-          ))}
+        <div>
+          <div className="hero-cats" style={{
+            display: 'flex',
+            width: '100%',
+            maxWidth: '500px',
+            margin: '0 auto',
+            borderTop: '2px solid #444',
+          }}>
+            {[
+              { label: 'Ropa', href: '/catalogo/ropa', icon: <IconShirt size={28} stroke={1.5} color="#FFD600" /> },
+              { label: 'Complementos', href: '/catalogo/complementos', icon: <IconSunglasses size={28} stroke={1.5} color="#FFD600" /> },
+            ].map((cat, i) => (
+              <Link href={cat.href} key={i} style={{
+                flex: 1,
+                padding: '24px 12px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                borderRight: i === 0 ? '2px solid #444' : 'none',
+                textDecoration: 'none',
+              }}>
+                {cat.icon}
+                <span style={{
+                  fontFamily: 'Barlow Condensed, sans-serif',
+                  fontWeight: 700,
+                  fontSize: '13px',
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  color: 'var(--amarillo)',
+                }}>{cat.label}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 

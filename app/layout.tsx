@@ -3,7 +3,6 @@ import './globals.css'
 import Navbar from '@/app/components/Navbar'
 import Footer from '@/app/components/Footer'
 import ScrollToTop from '@/app/components/ScrollToTop'
-import ScrollToTopBtn from '@/app/components/ScrollToTopBtn'
 
 export const metadata: Metadata = {
   title: 'Calidad Triple A',
@@ -55,7 +54,6 @@ export default function RootLayout({
         <Navbar />
         <main>{children}</main>
         <Footer />
-        <ScrollToTopBtn />
       </body>
     </html>
   )

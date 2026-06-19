@@ -4,28 +4,24 @@ export default function Footer() {
   return (
     <footer style={{
       background: 'var(--negro)',
-      padding: '12px 24px',
-      display: 'flex',
+      padding: '14px 24px',
+      display: 'grid',
+      gridTemplateColumns: '1fr auto 1fr',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      borderTop: '1px solid #222',
+      borderTop: '1px solid #333',
     }}>
-      <span style={{
-        fontFamily: 'Barlow Condensed, sans-serif',
-        fontSize: '12px',
-        color: '#444',
-        letterSpacing: '1px',
-      }}>
+      <div />
+      <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#777', letterSpacing: '1px', textAlign: 'center' }}>
         © {new Date().getFullYear()} Calidad Triple A
       </span>
-      <Link href="/aviso-legal" style={{
-        fontFamily: 'Barlow Condensed, sans-serif',
-        fontSize: '12px',
-        color: '#444',
-        letterSpacing: '1px',
-      }}>
-        Aviso legal
-      </Link>
+      <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-end' }}>
+        <Link href="/faq" style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#777', letterSpacing: '1px', textDecoration: 'none' }}>
+          FAQ
+        </Link>
+        <Link href="/aviso-legal" style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#777', letterSpacing: '1px', textDecoration: 'none' }}>
+          Aviso legal
+        </Link>
+      </div>
     </footer>
   )
 }
