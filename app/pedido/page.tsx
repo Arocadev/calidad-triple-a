@@ -5,15 +5,51 @@ import { useCartStore } from '@/store/cartStore'
 import { useRouter } from 'next/navigation'
 import jsPDF from 'jspdf'
 
+const PAISES = ['España', 'Francia', 'Portugal', 'Italia', 'Alemania', 'Reino Unido', 'Otros']
+
 export default function Pedido() {
   const { items, clearCart } = useCartStore()
   const router = useRouter()
   const [nombre, setNombre] = useState('')
   const [telefono, setTelefono] = useState('')
+  const [pais, setPais] = useState('')
+  const [provincia, setProvincia] = useState('')
+  const [ciudad, setCiudad] = useState('')
+  const [direccion, setDireccion] = useState('')
+  const [codigoPostal, setCodigoPostal] = useState('')
+  const [notas, setNotas] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+
+  const camposObligatorios = nombre && telefono && pais && provincia && ciudad && direccion && codigoPostal
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 12px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    fontFamily: 'Barlow Condensed, sans-serif',
+    fontSize: '15px',
+    outline: 'none',
+    boxSizing: 'border-box' as const,
+  }
+
+  const labelStyle = {
+    fontFamily: 'Barlow Condensed, sans-serif',
+    fontWeight: 700,
+    fontSize: '12px',
+    letterSpacing: '1px',
+    textTransform: 'uppercase' as const,
+    color: '#666',
+    display: 'block',
+    marginBottom: '6px',
+  }
+
+  const fieldStyle = {
+    marginBottom: '12px',
+  }
 
   const generarPDF = () => {
     const doc = new jsPDF()
@@ -35,12 +71,14 @@ export default function Pedido() {
     doc.setTextColor(80, 80, 80)
     doc.text(`Cliente: ${nombre}`, 20, 56)
     doc.text(`Teléfono: ${telefono}`, 20, 64)
-    doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, 20, 72)
+    doc.text(`Dirección: ${direccion}, ${codigoPostal} ${ciudad}, ${provincia}, ${pais}`, 20, 72)
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, 20, 80)
+    if (notas) doc.text(`Notas: ${notas}`, 20, 88)
 
     doc.setDrawColor(229, 229, 229)
-    doc.line(20, 78, 190, 78)
+    doc.line(20, notas ? 94 : 86, 190, notas ? 94 : 86)
 
-    let y = 90
+    let y = notas ? 106 : 98
     doc.setFont('helvetica', 'bold')
     doc.setTextColor(17, 17, 17)
     doc.text('Producto', 20, y)
@@ -67,10 +105,7 @@ export default function Pedido() {
     doc.setFontSize(14)
     doc.setTextColor(17, 17, 17)
     doc.text('TOTAL', 20, y)
-    doc.setFillColor(17, 17, 17)
-    doc.rect(160, y - 8, 30, 12, 'F')
-    doc.setTextColor(255, 214, 0)
-    doc.text(`${total.toFixed(0)}€`, 175, y, { align: 'center' })
+    doc.text(`${total.toFixed(0)}€`, 190, y, { align: 'right' })
 
     doc.setTextColor(150, 150, 150)
     doc.setFontSize(9)
@@ -81,14 +116,14 @@ export default function Pedido() {
   }
 
   const handlePedido = async () => {
-    if (!nombre || !telefono) return
+    if (!camposObligatorios) return
     setEnviando(true)
 
     try {
       const res = await fetch('/api/pedido', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, telefono, items, total }),
+        body: JSON.stringify({ nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal, notas, items, total }),
       })
 
       if (res.ok) {
@@ -205,41 +240,18 @@ export default function Pedido() {
               padding: '6px 0',
               borderBottom: '1px solid #f5f5f5',
             }}>
-              <span style={{
-                fontFamily: 'Barlow Condensed, sans-serif',
-                fontSize: '15px',
-                color: '#111',
-              }}>
+              <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '15px', color: '#111' }}>
                 {item.name} · Talla {item.size} · x{item.quantity}
               </span>
-              <span style={{
-                fontFamily: 'Barlow Condensed, sans-serif',
-                fontWeight: 700,
-                fontSize: '15px',
-                color: '#111',
-              }}>{(item.price * item.quantity).toFixed(0)}€</span>
+              <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '15px', color: '#111' }}>
+                {(item.price * item.quantity).toFixed(0)}€
+              </span>
             </div>
           ))}
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginTop: '16px',
-          }}>
-            <span style={{
-              fontFamily: 'Barlow Condensed, sans-serif',
-              fontWeight: 700,
-              fontSize: '16px',
-              color: '#999',
-              textTransform: 'uppercase',
-              letterSpacing: '2px',
-            }}>Total</span>
-            <span style={{
-              fontFamily: 'Barlow Condensed, sans-serif',
-              fontWeight: 900,
-              fontSize: '28px',
-              color: '#111',
-            }}>{total.toFixed(0)}€</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '16px', color: '#999', textTransform: 'uppercase', letterSpacing: '2px' }}>Total</span>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '28px', color: '#111' }}>{total.toFixed(0)}€</span>
           </div>
         </div>
 
@@ -258,71 +270,83 @@ export default function Pedido() {
             textTransform: 'uppercase',
             color: '#999',
             marginBottom: '16px',
-          }}>Tus datos</p>
+          }}>Datos personales</p>
 
-          <div style={{ marginBottom: '12px' }}>
-            <label style={{
-              fontFamily: 'Barlow Condensed, sans-serif',
-              fontWeight: 700,
-              fontSize: '12px',
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
-              color: '#666',
-              display: 'block',
-              marginBottom: '6px',
-            }}>Nombre</label>
-            <input
-              type="text"
-              value={nombre}
-              onChange={e => setNombre(e.target.value)}
-              placeholder="Tu nombre completo"
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontFamily: 'Barlow Condensed, sans-serif',
-                fontSize: '15px',
-                outline: 'none',
-              }}
-            />
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Nombre y apellidos *</label>
+            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Nombre y apellidos" style={inputStyle} />
           </div>
 
-          <div>
-            <label style={{
-              fontFamily: 'Barlow Condensed, sans-serif',
-              fontWeight: 700,
-              fontSize: '12px',
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
-              color: '#666',
-              display: 'block',
-              marginBottom: '6px',
-            }}>Teléfono</label>
-            <input
-              type="tel"
-              value={telefono}
-              onChange={e => setTelefono(e.target.value)}
-              placeholder="Tu número de teléfono"
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontFamily: 'Barlow Condensed, sans-serif',
-                fontSize: '15px',
-                outline: 'none',
-              }}
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Teléfono *</label>
+            <input type="tel" value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="Número de teléfono" style={inputStyle} />
+          </div>
+        </div>
+
+        <div style={{
+          background: '#fff',
+          border: '1px solid #e5e5e5',
+          borderRadius: '6px',
+          padding: '20px',
+          marginBottom: '16px',
+        }}>
+          <p style={{
+            fontFamily: 'Barlow Condensed, sans-serif',
+            fontWeight: 700,
+            fontSize: '11px',
+            letterSpacing: '2px',
+            textTransform: 'uppercase',
+            color: '#999',
+            marginBottom: '16px',
+          }}>Dirección de envío</p>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle}>País *</label>
+            <select value={pais} onChange={e => setPais(e.target.value)} style={{ ...inputStyle, background: '#fff', cursor: 'pointer' }}>
+              <option value="">Selecciona un país</option>
+              {PAISES.map(p => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div>
+              <label style={labelStyle}>Provincia *</label>
+              <input type="text" value={provincia} onChange={e => setProvincia(e.target.value)} placeholder="Provincia" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Ciudad *</label>
+              <input type="text" value={ciudad} onChange={e => setCiudad(e.target.value)} placeholder="Ciudad" style={inputStyle} />
+            </div>
+          </div>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Dirección *</label>
+            <input type="text" value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Calle y número" style={inputStyle} />
+          </div>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Código postal *</label>
+            <input type="text" value={codigoPostal} onChange={e => setCodigoPostal(e.target.value)} placeholder="00000" style={{ ...inputStyle, width: '140px' }} />
+          </div>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Notas del pedido</label>
+            <textarea
+              value={notas}
+              onChange={e => setNotas(e.target.value)}
+              placeholder="Instrucciones especiales, comentarios..."
+              rows={3}
+              style={{ ...inputStyle, resize: 'none' as const }}
             />
           </div>
         </div>
 
         <button
           onClick={handlePedido}
-          disabled={!nombre || !telefono || enviando}
+          disabled={!camposObligatorios || enviando}
           style={{
             width: '100%',
-            background: !nombre || !telefono ? '#ccc' : '#FFD600',
+            background: !camposObligatorios ? '#ccc' : '#FFD600',
             color: '#111',
             border: 'none',
             borderRadius: '4px',
@@ -332,7 +356,7 @@ export default function Pedido() {
             letterSpacing: '2px',
             textTransform: 'uppercase',
             padding: '16px',
-            cursor: !nombre || !telefono ? 'not-allowed' : 'pointer',
+            cursor: !camposObligatorios ? 'not-allowed' : 'pointer',
           }}>
           {enviando ? 'Enviando...' : 'Confirmar pedido →'}
         </button>
@@ -344,7 +368,7 @@ export default function Pedido() {
           textAlign: 'center',
           marginTop: '12px',
         }}>
-          Recibirás confirmación por WhatsApp. El pago se gestiona por Bizum o PayPal.
+          * Campos obligatorios. El pago se gestiona por Bizum o PayPal.
         </p>
       </div>
     </div>

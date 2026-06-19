@@ -4,10 +4,10 @@ import { Resend } from 'resend'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const WHATSAPP = '34632117194'
-const EMAIL_CARLITO = 'calidadtriplea.info@gmail.com'
+const EMAIL = 'calidadtriplea.info@gmail.com'
 
 export async function POST(req: NextRequest) {
-  const { nombre, telefono, items, total } = await req.json()
+  const { nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal, notas, items, total } = await req.json()
 
   const lineasProductos = items.map((item: {
     name: string
@@ -25,6 +25,12 @@ export async function POST(req: NextRequest) {
 👤 Cliente: ${nombre}
 📞 Teléfono: ${telefono}
 
+📍 Dirección de envío:
+${direccion}
+${codigoPostal} ${ciudad}, ${provincia}
+${pais}
+${notas ? `\n📝 Notas: ${notas}` : ''}
+
 📦 Productos:
 ${lineasProductos}
 
@@ -36,7 +42,7 @@ ${lineasProductos}
   try {
     await resend.emails.send({
       from: 'pedidos@calidadtriplea.es',
-      to: EMAIL_CARLITO,
+      to: EMAIL,
       subject: `Nuevo pedido de ${nombre} — ${total.toFixed(0)}€`,
       html: `
         <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
@@ -47,6 +53,8 @@ ${lineasProductos}
           <div style="padding: 24px; border: 1px solid #e5e5e5;">
             <p><strong>Cliente:</strong> ${nombre}</p>
             <p><strong>Teléfono:</strong> ${telefono}</p>
+            <p><strong>Dirección:</strong> ${direccion}, ${codigoPostal} ${ciudad}, ${provincia}, ${pais}</p>
+            ${notas ? `<p><strong>Notas:</strong> ${notas}</p>` : ''}
             <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 16px 0;" />
             ${items.map((item: {
               name: string
