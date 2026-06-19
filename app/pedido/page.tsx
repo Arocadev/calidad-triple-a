@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCartStore } from '@/store/cartStore'
 import { useRouter } from 'next/navigation'
 import jsPDF from 'jspdf'
@@ -24,6 +24,14 @@ export default function Pedido() {
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
 
   const camposObligatorios = nombre && telefono && pais && provincia && ciudad && direccion && codigoPostal
+
+  useEffect(() => {
+    if (items.length === 0 && !enviado) {
+      router.push('/carrito')
+    }
+  }, [items.length, enviado, router])
+
+  if (items.length === 0 && !enviado) return null
 
   const inputStyle = {
     width: '100%',
@@ -139,11 +147,6 @@ export default function Pedido() {
     } finally {
       setEnviando(false)
     }
-  }
-
-  if (items.length === 0 && !enviado) {
-    router.push('/carrito')
-    return null
   }
 
   if (enviado) {
