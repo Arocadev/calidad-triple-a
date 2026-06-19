@@ -57,28 +57,39 @@ export default function Producto() {
       <div style={{
         background: '#fff',
         borderBottom: '1px solid #e5e5e5',
-        padding: '16px 24px',
+        padding: '12px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
       }}>
-        <button
-          onClick={() => router.back()}
-          style={{
-            background: 'none',
-            border: 'none',
-            fontFamily: 'Barlow Condensed, sans-serif',
-            fontWeight: 700,
-            fontSize: '14px',
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
-            color: '#999',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: 0,
-          }}
-        >
-          ← Volver
-        </button>
+        <Link href="/" style={{
+          fontFamily: 'Barlow Condensed, sans-serif',
+          fontSize: '13px',
+          fontWeight: 700,
+          letterSpacing: '1px',
+          textTransform: 'uppercase',
+          color: '#bbb',
+          textDecoration: 'none',
+        }}>Inicio</Link>
+        <span style={{ color: '#ddd', fontSize: '13px' }}>›</span>
+        <Link href="/catalogo" style={{
+          fontFamily: 'Barlow Condensed, sans-serif',
+          fontSize: '13px',
+          fontWeight: 700,
+          letterSpacing: '1px',
+          textTransform: 'uppercase',
+          color: '#bbb',
+          textDecoration: 'none',
+        }}>Catálogo</Link>
+        <span style={{ color: '#ddd', fontSize: '13px' }}>›</span>
+        <span style={{
+          fontFamily: 'Barlow Condensed, sans-serif',
+          fontSize: '13px',
+          fontWeight: 700,
+          letterSpacing: '1px',
+          textTransform: 'uppercase',
+          color: '#111',
+        }}>{producto.nombre}</span>
       </div>
 
       <div style={{

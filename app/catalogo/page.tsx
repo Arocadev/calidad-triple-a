@@ -11,12 +11,12 @@ const CATEGORIAS = ['Todo', 'Zapatillas', 'Camisetas', 'Gorras', 'Complementos',
 const GENEROS = ['Todo', 'Masculino', 'Femenino']
 
 const productos = [
-  { id: '1', nombre: 'Air Max 90', marca: 'Nike', precio: 89, categoria: 'Zapatillas', genero: 'Masculino', tallas: ['39', '40', '41', '42', '43', '44'], icon: <IconShoe size={36} stroke={1.5} color="#bbb" /> },
-  { id: '2', nombre: 'Camiseta Essential', marca: 'Adidas', precio: 24, categoria: 'Camisetas', genero: 'Unisex', tallas: ['XS', 'S', 'M', 'L', 'XL'], icon: <IconShirt size={36} stroke={1.5} color="#bbb" /> },
-  { id: '3', nombre: 'Auriculares BT', marca: 'JBL', precio: 45, categoria: 'Electrónica', genero: 'Unisex', tallas: ['Única'], icon: <IconHeadphones size={36} stroke={1.5} color="#bbb" /> },
-  { id: '4', nombre: 'Gorra Snapback', marca: 'New Era', precio: 32, categoria: 'Gorras', genero: 'Masculino', tallas: ['Única'], icon: <span style={{fontSize:'36px'}}>🧢</span> },
-  { id: '5', nombre: 'Gafas de sol', marca: 'Ray-Ban', precio: 55, categoria: 'Complementos', genero: 'Unisex', tallas: ['Única'], icon: <IconSunglasses size={36} stroke={1.5} color="#bbb" /> },
-  { id: '6', nombre: 'Reloj deportivo', marca: 'Casio', precio: 38, categoria: 'Electrónica', genero: 'Masculino', tallas: ['Única'], icon: <IconDeviceWatch size={36} stroke={1.5} color="#bbb" /> },
+  { id: '1', nombre: 'Air Max 90', marca: 'Nike', precio: 89, categoria: 'Zapatillas', genero: 'Masculino', tallas: ['39', '40', '41', '42', '43', '44'], badge: 'Destacado' as string | null, icon: <IconShoe size={36} stroke={1.5} color="#bbb" /> },
+  { id: '2', nombre: 'Camiseta Essential', marca: 'Adidas', precio: 24, categoria: 'Camisetas', genero: 'Unisex', tallas: ['XS', 'S', 'M', 'L', 'XL'], badge: 'Nuevo' as string | null, icon: <IconShirt size={36} stroke={1.5} color="#bbb" /> },
+  { id: '3', nombre: 'Auriculares BT', marca: 'JBL', precio: 45, categoria: 'Electrónica', genero: 'Unisex', tallas: ['Única'], badge: null, icon: <IconHeadphones size={36} stroke={1.5} color="#bbb" /> },
+  { id: '4', nombre: 'Gorra Snapback', marca: 'New Era', precio: 32, categoria: 'Gorras', genero: 'Masculino', tallas: ['Única'], badge: 'Nuevo' as string | null, icon: <span style={{fontSize:'36px'}}>🧢</span> },
+  { id: '5', nombre: 'Gafas de sol', marca: 'Ray-Ban', precio: 55, categoria: 'Complementos', genero: 'Unisex', tallas: ['Única'], badge: null, icon: <IconSunglasses size={36} stroke={1.5} color="#bbb" /> },
+  { id: '6', nombre: 'Reloj deportivo', marca: 'Casio', precio: 38, categoria: 'Electrónica', genero: 'Masculino', tallas: ['Única'], badge: 'Destacado' as string | null, icon: <IconDeviceWatch size={36} stroke={1.5} color="#bbb" /> },
 ]
 
 export default function Catalogo() {
@@ -253,6 +253,24 @@ export default function Catalogo() {
                 onMouseEnter={e => (e.currentTarget.style.borderColor = '#FFD600')}
                 onMouseLeave={e => (e.currentTarget.style.borderColor = tallasAbiertas === p.id ? '#FFD600' : '#e5e5e5')}
               >
+                {p.badge && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '10px',
+                    left: '10px',
+                    background: p.badge === 'Nuevo' ? '#FFD600' : '#111',
+                    color: p.badge === 'Nuevo' ? '#111' : '#FFD600',
+                    fontFamily: 'Barlow Condensed, sans-serif',
+                    fontWeight: 900,
+                    fontSize: '11px',
+                    letterSpacing: '2px',
+                    textTransform: 'uppercase',
+                    padding: '3px 8px',
+                    borderRadius: '3px',
+                    zIndex: 1,
+                  }}>{p.badge}</div>
+                )}
+
                 <Link href={`/producto/${p.id}`} style={{ textDecoration: 'none' }}>
                   <div style={{
                     background: '#f5f5f5',
