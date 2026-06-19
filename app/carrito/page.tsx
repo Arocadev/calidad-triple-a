@@ -4,7 +4,7 @@ import { useCartStore } from '@/store/cartStore'
 import { useRouter } from 'next/navigation'
 
 export default function Carrito() {
-  const { items, removeItem, clearCart } = useCartStore()
+  const { items, removeItem, updateQuantity, clearCart } = useCartStore()
   const router = useRouter()
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
@@ -88,8 +88,9 @@ export default function Carrito() {
               justifyContent: 'space-between',
               padding: '16px',
               borderBottom: i < items.length - 1 ? '1px solid #f0f0f0' : 'none',
+              gap: '12px',
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1 }}>
                 <div style={{
                   width: '48px',
                   height: '48px',
@@ -100,6 +101,7 @@ export default function Carrito() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '22px',
+                  flexShrink: 0,
                 }}>🛍</div>
                 <div>
                   <div style={{
@@ -113,16 +115,64 @@ export default function Carrito() {
                     fontSize: '12px',
                     color: '#999',
                   }}>
-                    {item.brand} · Talla {item.size} · x{item.quantity}
+                    {item.brand} · Talla {item.size}
                   </div>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                  onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    background: '#f5f5f5',
+                    border: '1px solid #e5e5e5',
+                    borderRadius: '4px',
+                    fontFamily: 'Barlow Condensed, sans-serif',
+                    fontWeight: 900,
+                    fontSize: '16px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#111',
+                  }}>−</button>
+                <span style={{
+                  fontFamily: 'Barlow Condensed, sans-serif',
+                  fontWeight: 700,
+                  fontSize: '16px',
+                  color: '#111',
+                  minWidth: '20px',
+                  textAlign: 'center',
+                }}>{item.quantity}</span>
+                <button
+                  onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    background: '#111',
+                    border: 'none',
+                    borderRadius: '4px',
+                    fontFamily: 'Barlow Condensed, sans-serif',
+                    fontWeight: 900,
+                    fontSize: '16px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#FFD600',
+                  }}>+</button>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{
                   fontFamily: 'Barlow Condensed, sans-serif',
                   fontWeight: 900,
                   fontSize: '20px',
                   color: '#111',
+                  minWidth: '52px',
+                  textAlign: 'right',
                 }}>{(item.price * item.quantity).toFixed(0)}€</span>
                 <button
                   onClick={() => removeItem(item.id, item.size)}

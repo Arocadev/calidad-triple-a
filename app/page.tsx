@@ -9,7 +9,7 @@ export default function Home() {
         padding: '40px 24px 0',
         textAlign: 'center',
       }}>
-        <p style={{
+        <p className="hero-eyebrow" style={{
           fontFamily: 'Barlow Condensed, sans-serif',
           fontSize: '15px',
           fontWeight: 700,
@@ -21,7 +21,7 @@ export default function Home() {
           Ropa · Complementos · Electrónica
         </p>
 
-        <h1 style={{
+        <h1 className="hero-title" style={{
           fontFamily: 'Barlow Condensed, sans-serif',
           fontWeight: 900,
           fontSize: '100px',
@@ -33,7 +33,7 @@ export default function Home() {
           <span style={{ color: 'var(--amarillo)' }}>TRIPLE A</span>
         </h1>
 
-        <div style={{
+        <div className="hero-bar" style={{
           width: '80px',
           height: '5px',
           background: 'var(--amarillo)',
@@ -41,7 +41,7 @@ export default function Home() {
           borderRadius: '2px',
         }} />
 
-        <p style={{
+        <p className="hero-sub" style={{
           fontFamily: 'Barlow Condensed, sans-serif',
           fontSize: '16px',
           color: '#666',
@@ -52,7 +52,7 @@ export default function Home() {
           Al mejor precio
         </p>
 
-        <div style={{ display: 'flex', borderTop: '2px solid #444' }}>
+        <div className="hero-cats" style={{ display: 'flex', borderTop: '2px solid #444' }}>
           {[
             { label: 'Ropa', icon: <IconShirt size={28} stroke={1.5} color="#FFD600" /> },
             { label: 'Complementos', icon: <IconSunglasses size={28} stroke={1.5} color="#FFD600" /> },

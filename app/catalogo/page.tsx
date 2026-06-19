@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { IconShirt, IconSunglasses, IconHeadphones, IconShoe, IconDeviceWatch } from '@tabler/icons-react'
 import { useCartStore } from '@/store/cartStore'
 import Toast from '@/app/components/Toast'
@@ -21,6 +22,8 @@ const productos = [
 export default function Catalogo() {
   const [categoria, setCategoria] = useState('Todo')
   const [genero, setGenero] = useState('Todo')
+  const [busqueda, setBusqueda] = useState('')
+  const [orden, setOrden] = useState('')
   const [filtroAbierto, setFiltroAbierto] = useState(false)
   const [tallasAbiertas, setTallasAbiertas] = useState<string | null>(null)
   const [toastVisible, setToastVisible] = useState(false)
@@ -33,11 +36,19 @@ export default function Catalogo() {
     return () => clearTimeout(t)
   }, [])
 
-  const filtrados = productos.filter(p => {
-    const matchCat = categoria === 'Todo' || p.categoria === categoria
-    const matchGen = genero === 'Todo' || p.genero === genero || p.genero === 'Unisex'
-    return matchCat && matchGen
-  })
+  const filtrados = productos
+    .filter(p => {
+      const matchCat = categoria === 'Todo' || p.categoria === categoria
+      const matchGen = genero === 'Todo' || p.genero === genero || p.genero === 'Unisex'
+      const matchBusqueda = p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+        p.marca.toLowerCase().includes(busqueda.toLowerCase())
+      return matchCat && matchGen && matchBusqueda
+    })
+    .sort((a, b) => {
+      if (orden === 'precio-asc') return a.precio - b.precio
+      if (orden === 'precio-desc') return b.precio - a.precio
+      return 0
+    })
 
   const handleAnadir = (p: typeof productos[0], talla: string) => {
     addItem({
@@ -53,6 +64,25 @@ export default function Catalogo() {
     setToastVisible(prev => !prev)
   }
 
+  const btnOrden = (valor: string, label: string) => (
+    <button
+      onClick={() => setOrden(orden === valor ? '' : valor)}
+      style={{
+        background: orden === valor ? '#111' : '#fff',
+        color: orden === valor ? '#FFD600' : '#666',
+        border: `1.5px solid ${orden === valor ? '#111' : '#e5e5e5'}`,
+        borderRadius: '4px',
+        padding: '8px 14px',
+        fontFamily: 'Barlow Condensed, sans-serif',
+        fontWeight: 700,
+        fontSize: '13px',
+        letterSpacing: '1px',
+        textTransform: 'uppercase',
+        cursor: 'pointer',
+      }}
+    >{label}</button>
+  )
+
   return (
     <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
 
@@ -63,6 +93,8 @@ export default function Catalogo() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        gap: '12px',
+        flexWrap: 'wrap',
       }}>
         <h1 style={{
           fontFamily: 'Barlow Condensed, sans-serif',
@@ -77,27 +109,47 @@ export default function Catalogo() {
             {filtrados.length} productos
           </span>
         </h1>
-        <button
-          onClick={() => setFiltroAbierto(!filtroAbierto)}
-          style={{
-            background: filtroAbierto ? '#111' : '#fff',
-            color: filtroAbierto ? '#FFD600' : '#111',
-            border: '1.5px solid #111',
-            borderRadius: '4px',
-            padding: '8px 18px',
-            fontFamily: 'Barlow Condensed, sans-serif',
-            fontWeight: 700,
-            fontSize: '14px',
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            cursor: 'pointer',
-          }}
-        >
-          ⚙ Filtrar
-        </button>
+
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={busqueda}
+            onChange={e => setBusqueda(e.target.value)}
+            style={{
+              border: '1.5px solid #e5e5e5',
+              borderRadius: '4px',
+              padding: '8px 14px',
+              fontFamily: 'Barlow Condensed, sans-serif',
+              fontSize: '14px',
+              outline: 'none',
+              width: '160px',
+            }}
+          />
+          {btnOrden('precio-asc', 'Precio asc.')}
+          {btnOrden('precio-desc', 'Precio desc.')}
+          <button
+            onClick={() => setFiltroAbierto(!filtroAbierto)}
+            style={{
+              background: filtroAbierto ? '#111' : '#fff',
+              color: filtroAbierto ? '#FFD600' : '#111',
+              border: '1.5px solid #111',
+              borderRadius: '4px',
+              padding: '8px 18px',
+              fontFamily: 'Barlow Condensed, sans-serif',
+              fontWeight: 700,
+              fontSize: '14px',
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+            }}
+          >
+            ⚙ Filtrar
+          </button>
+        </div>
       </div>
 
       {filtroAbierto && (
@@ -174,109 +226,128 @@ export default function Catalogo() {
       }}>
         {cargando
           ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
-          : filtrados.map(p => (
-          <div key={p.id} style={{
-            background: '#fff',
-            border: '1px solid #e5e5e5',
-            borderRadius: '6px',
-            overflow: 'hidden',
-            cursor: 'pointer',
-            position: 'relative',
-          }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = '#FFD600')}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = tallasAbiertas === p.id ? '#FFD600' : '#e5e5e5')}
-          >
-            <div style={{
-              background: '#f5f5f5',
-              height: '160px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              {p.icon}
-            </div>
-            <div style={{ padding: '12px' }}>
+          : filtrados.length === 0
+            ? (
               <div style={{
+                gridColumn: '1 / -1',
+                textAlign: 'center',
+                padding: '48px',
                 fontFamily: 'Barlow Condensed, sans-serif',
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '2px',
+                fontSize: '18px',
                 color: '#999',
                 textTransform: 'uppercase',
-                marginBottom: '2px',
-              }}>{p.marca}</div>
-              <div style={{
-                fontFamily: 'Barlow Condensed, sans-serif',
-                fontWeight: 700,
-                fontSize: '17px',
-                color: '#111',
-                marginBottom: '10px',
-              }}>{p.nombre}</div>
-
-              {tallasAbiertas === p.id ? (
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <p style={{
+                letterSpacing: '2px',
+              }}>
+                No se encontraron productos
+              </div>
+            )
+            : filtrados.map(p => (
+              <div key={p.id} style={{
+                background: '#fff',
+                border: '1px solid #e5e5e5',
+                borderRadius: '6px',
+                overflow: 'hidden',
+                cursor: 'pointer',
+                position: 'relative',
+              }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = '#FFD600')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = tallasAbiertas === p.id ? '#FFD600' : '#e5e5e5')}
+              >
+                <Link href={`/producto/${p.id}`} style={{ textDecoration: 'none' }}>
+                  <div style={{
+                    background: '#f5f5f5',
+                    height: '160px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    {p.icon}
+                  </div>
+                </Link>
+                <div style={{ padding: '12px' }}>
+                  <Link href={`/producto/${p.id}`} style={{ textDecoration: 'none' }}>
+                    <div style={{
                       fontFamily: 'Barlow Condensed, sans-serif',
                       fontSize: '11px',
                       fontWeight: 700,
                       letterSpacing: '2px',
                       color: '#999',
                       textTransform: 'uppercase',
-                      margin: 0,
-                    }}>Elige talla</p>
-                    <button onClick={() => setTallasAbiertas(null)} style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#bbb',
-                      fontSize: '16px',
-                      cursor: 'pointer',
-                      padding: 0,
-                      lineHeight: 1,
-                    }}>✕</button>
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    {p.tallas.map(t => (
-                      <button key={t} onClick={() => handleAnadir(p, t)} style={{
+                      marginBottom: '2px',
+                    }}>{p.marca}</div>
+                    <div style={{
+                      fontFamily: 'Barlow Condensed, sans-serif',
+                      fontWeight: 700,
+                      fontSize: '17px',
+                      color: '#111',
+                      marginBottom: '10px',
+                    }}>{p.nombre}</div>
+                  </Link>
+
+                  {tallasAbiertas === p.id ? (
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <p style={{
+                          fontFamily: 'Barlow Condensed, sans-serif',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          letterSpacing: '2px',
+                          color: '#999',
+                          textTransform: 'uppercase',
+                          margin: 0,
+                        }}>Elige talla</p>
+                        <button onClick={() => setTallasAbiertas(null)} style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#bbb',
+                          fontSize: '16px',
+                          cursor: 'pointer',
+                          padding: 0,
+                          lineHeight: 1,
+                        }}>✕</button>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {p.tallas.map(t => (
+                          <button key={t} onClick={() => handleAnadir(p, t)} style={{
+                            background: '#111',
+                            color: '#FFD600',
+                            border: 'none',
+                            borderRadius: '3px',
+                            fontFamily: 'Barlow Condensed, sans-serif',
+                            fontWeight: 700,
+                            fontSize: '12px',
+                            padding: '5px 10px',
+                            cursor: 'pointer',
+                          }}>{t}</button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{
+                        fontFamily: 'Barlow Condensed, sans-serif',
+                        fontWeight: 900,
+                        fontSize: '22px',
+                        color: '#111',
+                      }}>{p.precio}€</span>
+                      <button onClick={() => setTallasAbiertas(p.id)} style={{
                         background: '#111',
                         color: '#FFD600',
                         border: 'none',
                         borderRadius: '3px',
                         fontFamily: 'Barlow Condensed, sans-serif',
-                        fontWeight: 700,
+                        fontWeight: 900,
                         fontSize: '12px',
-                        padding: '5px 10px',
+                        letterSpacing: '1px',
+                        padding: '6px 12px',
                         cursor: 'pointer',
-                      }}>{t}</button>
-                    ))}
-                  </div>
+                        textTransform: 'uppercase',
+                      }}>+ Añadir</button>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{
-                    fontFamily: 'Barlow Condensed, sans-serif',
-                    fontWeight: 900,
-                    fontSize: '22px',
-                    color: '#111',
-                  }}>{p.precio}€</span>
-                  <button onClick={() => setTallasAbiertas(p.id)} style={{
-                    background: '#111',
-                    color: '#FFD600',
-                    border: 'none',
-                    borderRadius: '3px',
-                    fontFamily: 'Barlow Condensed, sans-serif',
-                    fontWeight: 900,
-                    fontSize: '12px',
-                    letterSpacing: '1px',
-                    padding: '6px 12px',
-                    cursor: 'pointer',
-                    textTransform: 'uppercase',
-                  }}>+ Añadir</button>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
+              </div>
+            ))}
       </div>
 
       <Toast mensaje={toastMsg} visible={toastVisible} />
