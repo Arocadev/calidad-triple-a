@@ -6,50 +6,39 @@ export default function Home() {
     <>
       <section style={{
         background: 'var(--negro)',
-        padding: '40px 24px 0',
+        padding: '0 24px 0',
         textAlign: 'center',
       }}>
-        <p className="hero-eyebrow" style={{
-          fontFamily: 'Barlow Condensed, sans-serif',
-          fontSize: '15px',
-          fontWeight: 700,
-          letterSpacing: '4px',
-          color: 'var(--amarillo)',
-          textTransform: 'uppercase',
-          marginBottom: '16px',
-        }}>
-          Ropa · Complementos
-        </p>
-
-        <h1 className="hero-title home-title" style={{
-          fontFamily: 'Barlow Condensed, sans-serif',
-          fontWeight: 900,
-          fontSize: '100px',
-          lineHeight: 0.88,
-          color: '#fff',
-          letterSpacing: '-2px',
-        }}>
-          CALIDAD<br />
-          <span style={{ color: 'var(--amarillo)' }}>TRIPLE A</span>
-        </h1>
+        <img
+          src="/logo-hero.png"
+          alt="Calidad Triple A — Moda Urbana & Streetwear"
+          className="hero-logo"
+          style={{
+            maxWidth: '340px',
+            width: '100%',
+            height: 'auto',
+            margin: '0 auto',
+            display: 'block',
+          }}
+        />
 
         <div className="hero-bar" style={{
           width: '80px',
           height: '5px',
           background: 'var(--amarillo)',
-          margin: '24px auto 18px',
+          margin: '-20px auto 10px',
           borderRadius: '2px',
         }} />
 
         <p className="hero-sub" style={{
           fontFamily: 'Barlow Condensed, sans-serif',
           fontSize: '16px',
-          color: '#666',
+          color: '#777',
           letterSpacing: '4px',
           textTransform: 'uppercase',
-          marginBottom: '32px',
+          marginBottom: '8px',
         }}>
-          Al mejor precio
+          La misma actitud, diferente precio
         </p>
 
         <div>
@@ -66,7 +55,7 @@ export default function Home() {
             ].map((cat, i) => (
               <Link href={cat.href} key={i} style={{
                 flex: 1,
-                padding: '24px 12px',
+                padding: '20px 12px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -92,30 +81,33 @@ export default function Home() {
 
       <div className="trust-bar" style={{
         background: 'var(--amarillo)',
-        padding: '12px 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
-        flexWrap: 'wrap',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
       }}>
         {[
           { text: 'Calidad AAA', icon: <IconRosette size={18} stroke={1.8} color="#111" /> },
           { text: 'Envío rápido', icon: <IconTruckDelivery size={18} stroke={1.8} color="#111" /> },
           { text: 'Pedido por WhatsApp', icon: <IconBrandWhatsapp size={18} stroke={1.8} color="#111" /> },
         ].map((item, i) => (
-          <span key={i} style={{
-            fontFamily: 'Barlow Condensed, sans-serif',
-            fontWeight: 700,
-            fontSize: '13px',
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
-            color: 'var(--negro)',
+          <div key={i} style={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: '7px',
+            padding: '12px 16px',
+            borderRight: i < 2 ? '2px solid var(--negro)' : 'none',
           }}>
-            {item.icon} {item.text}
-          </span>
+            {item.icon}
+            <span style={{
+              fontFamily: 'Barlow Condensed, sans-serif',
+              fontWeight: 700,
+              fontSize: '13px',
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              color: 'var(--negro)',
+              whiteSpace: 'nowrap',
+            }}>{item.text}</span>
+          </div>
         ))}
       </div>
     </>

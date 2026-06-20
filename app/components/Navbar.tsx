@@ -58,7 +58,7 @@ export default function Navbar() {
         />
       </Link>
 
-      <div className="navbar-links" style={{ display: 'flex', gap: '48px', alignItems: 'center' }}>
+      <div className="navbar-links" style={{ display: 'flex', gap: '56px', alignItems: 'center' }}>
         <Link href="/" style={{
           fontFamily: 'Barlow Condensed, sans-serif',
           fontWeight: 700,
@@ -77,20 +77,26 @@ export default function Navbar() {
           textDecoration: 'none',
           textTransform: 'uppercase',
         }}>Catálogo</Link>
+        <Link href="/quienes-somos" style={{
+          fontFamily: 'Barlow Condensed, sans-serif',
+          fontWeight: 700,
+          fontSize: '15px',
+          letterSpacing: '2px',
+          color: '#fff',
+          textDecoration: 'none',
+          textTransform: 'uppercase',
+        }}>Quiénes somos</Link>
       </div>
 
       <Link href="/carrito" style={{
-        background: 'var(--amarillo)',
-        color: 'var(--negro)',
-        borderRadius: '4px',
-        padding: '7px 12px',
-        fontFamily: 'Barlow Condensed, sans-serif',
-        fontWeight: 900,
-        fontSize: '14px',
-        letterSpacing: '1px',
+        color: 'var(--amarillo)',
         display: 'flex',
         alignItems: 'center',
         gap: '6px',
+        fontFamily: 'Barlow Condensed, sans-serif',
+        fontWeight: 700,
+        fontSize: '15px',
+        letterSpacing: '2px',
         textTransform: 'uppercase',
         textDecoration: 'none',
         transform: bounce ? 'scale(1.12)' : 'scale(1)',
@@ -98,11 +104,11 @@ export default function Navbar() {
         flexShrink: 0,
       }}>
         <svg
-          width="16"
-          height="16"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#111"
+          stroke="var(--amarillo)"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -118,8 +124,8 @@ export default function Navbar() {
         <span className="navbar-cart-text">Carrito</span>
         {totalItems > 0 && (
           <span style={{
-            background: 'var(--negro)',
-            color: 'var(--amarillo)',
+            background: '#fff',
+            color: 'var(--negro)',
             borderRadius: '50%',
             width: '18px',
             height: '18px',
@@ -165,7 +171,18 @@ export default function Navbar() {
             textDecoration: 'none',
             textTransform: 'uppercase',
             padding: '12px 8px',
+            borderBottom: '1px solid #333',
           }}>Catálogo</Link>
+          <Link href="/quienes-somos" onClick={() => setMenuAbierto(false)} style={{
+            fontFamily: 'Barlow Condensed, sans-serif',
+            fontWeight: 700,
+            fontSize: '16px',
+            letterSpacing: '1px',
+            color: '#fff',
+            textDecoration: 'none',
+            textTransform: 'uppercase',
+            padding: '12px 8px',
+          }}>Quiénes somos</Link>
         </div>
       )}
     </nav>

@@ -5,7 +5,7 @@ import { useCartStore } from '@/store/cartStore'
 import { useRouter } from 'next/navigation'
 import jsPDF from 'jspdf'
 
-const PAISES = ['España', 'Francia', 'Portugal', 'Italia', 'Alemania', 'Reino Unido', 'Otros']
+const PAISES = ['España', 'Francia', 'Portugal', 'Italia', 'Alemania', 'Otros']
 
 export default function Pedido() {
   const { items, clearCart } = useCartStore()
@@ -75,28 +75,52 @@ export default function Pedido() {
 
   const fieldStyle = { marginBottom: '12px' }
 
-  const generarPDF = () => {
+  const cargarImagenBase64 = (url: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.crossOrigin = 'Anonymous'
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = img.width
+        canvas.height = img.height
+        const ctx = canvas.getContext('2d')
+        ctx?.drawImage(img, 0, 0)
+        resolve(canvas.toDataURL('image/png'))
+      }
+      img.onerror = reject
+      img.src = url
+    })
+  }
+
+  const generarPDF = async () => {
     const doc = new jsPDF()
     doc.setFillColor(17, 17, 17)
-    doc.rect(0, 0, 210, 30, 'F')
-    doc.setTextColor(255, 214, 0)
-    doc.setFontSize(22)
-    doc.setFont('helvetica', 'bold')
-    doc.text('CALIDAD TRIPLE A', 105, 18, { align: 'center' })
+    doc.rect(0, 0, 210, 40, 'F')
+
+    try {
+      const logoBase64 = await cargarImagenBase64('/logo-hero.png')
+      doc.addImage(logoBase64, 'PNG', 75, 3, 60, 36)
+    } catch (e) {
+      doc.setTextColor(255, 214, 0)
+      doc.setFontSize(22)
+      doc.setFont('helvetica', 'bold')
+      doc.text('CALIDAD TRIPLE A', 105, 23, { align: 'center' })
+    }
+
     doc.setTextColor(17, 17, 17)
     doc.setFontSize(14)
-    doc.text('RESUMEN DEL PEDIDO', 105, 42, { align: 'center' })
+    doc.text('RESUMEN DEL PEDIDO', 105, 52, { align: 'center' })
     doc.setFontSize(11)
     doc.setFont('helvetica', 'normal')
     doc.setTextColor(80, 80, 80)
-    doc.text(`Cliente: ${nombre}`, 20, 56)
-    doc.text(`Teléfono: ${telefono}`, 20, 64)
-    doc.text(`Dirección: ${direccion}, ${codigoPostal} ${ciudad}, ${provincia}, ${pais}`, 20, 72)
-    doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, 20, 80)
-    if (notas) doc.text(`Notas: ${notas}`, 20, 88)
+    doc.text(`Cliente: ${nombre}`, 20, 66)
+    doc.text(`Teléfono: ${telefono}`, 20, 74)
+    doc.text(`Dirección: ${direccion}, ${codigoPostal} ${ciudad}, ${provincia}, ${pais}`, 20, 82)
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, 20, 90)
+    if (notas) doc.text(`Notas: ${notas}`, 20, 98)
     doc.setDrawColor(229, 229, 229)
-    doc.line(20, notas ? 94 : 86, 190, notas ? 94 : 86)
-    let y = notas ? 106 : 98
+    doc.line(20, notas ? 104 : 96, 190, notas ? 104 : 96)
+    let y = notas ? 116 : 108
     doc.setFont('helvetica', 'bold')
     doc.setTextColor(17, 17, 17)
     doc.text('Producto', 20, y)
@@ -144,7 +168,7 @@ export default function Pedido() {
       })
       if (res.ok) {
         const data = await res.json()
-        const doc = generarPDF()
+        const doc = await generarPDF()
         doc.save(`pedido-${nombre.replace(' ', '-')}-${Date.now()}.pdf`)
         guardarDatosCliente()
         setEnviado(true)
@@ -156,6 +180,12 @@ export default function Pedido() {
     } finally {
       setEnviando(false)
     }
+  }
+
+  const abrirPopup = () => {
+    if (!camposObligatorios) return
+    window.scrollTo(0, 0)
+    setPopup(true)
   }
 
   if (enviado) {
@@ -193,9 +223,10 @@ export default function Pedido() {
           background: 'rgba(0,0,0,0.6)',
           zIndex: 200,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
           padding: '24px',
+          overflowY: 'auto',
         }}>
           <div style={{
             background: '#fff',
@@ -205,6 +236,7 @@ export default function Pedido() {
             width: '100%',
             maxHeight: '90vh',
             overflowY: 'auto',
+            marginTop: '24px',
           }}>
             <h2 style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '24px', textTransform: 'uppercase', margin: '0 0 20px' }}>
               Confirmar pedido
@@ -348,7 +380,7 @@ export default function Pedido() {
         </div>
 
         <button
-          onClick={() => camposObligatorios && setPopup(true)}
+          onClick={abrirPopup}
           disabled={!camposObligatorios || enviando}
           style={{
             width: '100%',
