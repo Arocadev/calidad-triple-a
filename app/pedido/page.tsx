@@ -31,6 +31,24 @@ export default function Pedido() {
     }
   }, [items.length, enviado, router])
 
+  useEffect(() => {
+    const guardado = localStorage.getItem('datosCliente')
+    if (guardado) {
+      try {
+        const d = JSON.parse(guardado)
+        setNombre(d.nombre || '')
+        setTelefono(d.telefono || '')
+        setPais(d.pais || '')
+        setProvincia(d.provincia || '')
+        setCiudad(d.ciudad || '')
+        setDireccion(d.direccion || '')
+        setCodigoPostal(d.codigoPostal || '')
+      } catch (e) {
+        console.error('Error leyendo datos guardados', e)
+      }
+    }
+  }, [])
+
   if (items.length === 0 && !enviado) return null
 
   const inputStyle = {
@@ -109,6 +127,12 @@ export default function Pedido() {
     return doc
   }
 
+  const guardarDatosCliente = () => {
+    localStorage.setItem('datosCliente', JSON.stringify({
+      nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal,
+    }))
+  }
+
   const handlePedido = async () => {
     setPopup(false)
     setEnviando(true)
@@ -122,6 +146,7 @@ export default function Pedido() {
         const data = await res.json()
         const doc = generarPDF()
         doc.save(`pedido-${nombre.replace(' ', '-')}-${Date.now()}.pdf`)
+        guardarDatosCliente()
         setEnviado(true)
         clearCart()
         window.open(data.whatsappUrl, '_blank')
@@ -178,6 +203,8 @@ export default function Pedido() {
             padding: '28px',
             maxWidth: '420px',
             width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
           }}>
             <h2 style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '24px', textTransform: 'uppercase', margin: '0 0 20px' }}>
               Confirmar pedido
@@ -290,7 +317,7 @@ export default function Pedido() {
               {PAISES.map(p => <option key={p} value={p}>{p}</option>)}
             </select>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+          <div className="pedido-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
             <div>
               <label style={labelStyle}>Provincia *</label>
               <input type="text" value={provincia} onChange={e => setProvincia(e.target.value)} placeholder="Provincia" style={inputStyle} />

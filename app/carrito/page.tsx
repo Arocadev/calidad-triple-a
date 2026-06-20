@@ -82,15 +82,16 @@ export default function Carrito() {
           marginBottom: '16px',
         }}>
           {items.map((item, i) => (
-            <div key={`${item.id}-${item.size}`} style={{
+            <div key={`${item.id}-${item.size}`} className="cart-item" style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '16px',
               borderBottom: i < items.length - 1 ? '1px solid #f0f0f0' : 'none',
               gap: '12px',
+              flexWrap: 'wrap',
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: '140px' }}>
                 <div style={{
                   width: '48px',
                   height: '48px',

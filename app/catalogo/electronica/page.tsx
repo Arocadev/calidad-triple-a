@@ -8,7 +8,7 @@ import { useCartStore } from '@/store/cartStore'
 import Toast from '@/app/components/Toast'
 import SkeletonCard from '@/app/components/SkeletonCard'
 
-const SUBCATEGORIAS = ['Todo', 'Auriculares', 'Relojes', 'Gadgets', 'Accesorios']
+const SUBCATEGORIAS = ['Todo', 'Cargadores', 'Auriculares', 'Altavoces', 'Relojes inteligentes', 'Fundas']
 
 interface SanityProduct {
   _id: string
@@ -24,16 +24,24 @@ interface SanityProduct {
 }
 
 const subCatLabel: Record<string, string> = {
-  auriculares: 'Auriculares', relojes: 'Relojes', gadgets: 'Gadgets', accesorios: 'Accesorios',
+  cargadores: 'Cargadores',
+  auriculares: 'Auriculares',
+  altavoces: 'Altavoces',
+  relojes: 'Relojes inteligentes',
+  fundas: 'Fundas',
 }
+
+type Seccion = 'orden' | 'precio' | 'categoria' | 'genero' | 'marca' | null
 
 export default function CatalogoElectronica() {
   const [productos, setProductos] = useState<SanityProduct[]>([])
   const [subcategoria, setSubcategoria] = useState('Todo')
   const [genero, setGenero] = useState('Todo')
+  const [marca, setMarca] = useState('Todo')
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState('')
   const [filtroAbierto, setFiltroAbierto] = useState(false)
+  const [seccionAbierta, setSeccionAbierta] = useState<Seccion>(null)
   const [tallasAbiertas, setTallasAbiertas] = useState<string | null>(null)
   const [toastVisible, setToastVisible] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
@@ -54,13 +62,16 @@ export default function CatalogoElectronica() {
     fetchProductos()
   }, [])
 
+  const marcas = ['Todo', ...Array.from(new Set(productos.map(p => p.brand))).sort()]
+
   const filtrados = productos
     .filter(p => {
       const matchCat = subcategoria === 'Todo' || subCatLabel[p.subCategory] === subcategoria
       const matchGen = genero === 'Todo' || p.gender === genero.toLowerCase() || p.gender === 'unisex'
+      const matchMarca = marca === 'Todo' || p.brand === marca
       const matchBusqueda = p.name.toLowerCase().includes(busqueda.toLowerCase()) || p.brand.toLowerCase().includes(busqueda.toLowerCase())
       const matchPrecio = p.price >= precioMin && p.price <= precioMax
-      return matchCat && matchGen && matchBusqueda && matchPrecio
+      return matchCat && matchGen && matchMarca && matchBusqueda && matchPrecio
     })
     .sort((a, b) => {
       if (orden === 'precio-asc') return a.price - b.price
@@ -78,24 +89,63 @@ export default function CatalogoElectronica() {
   const limpiarFiltros = () => {
     setSubcategoria('Todo')
     setGenero('Todo')
+    setMarca('Todo')
     setOrden('')
     setPrecioMin(0)
     setPrecioMax(500)
   }
 
-  const btnStyle = (activo: boolean) => ({
-    background: activo ? '#111' : 'transparent',
-    color: activo ? '#FFD600' : '#555',
+  const cerrarFiltro = () => {
+    setFiltroAbierto(false)
+    setSeccionAbierta(null)
+  }
+
+  const toggleSeccion = (s: Seccion) => {
+    setSeccionAbierta(prev => prev === s ? null : s)
+  }
+
+  const pillStyle = (activo: boolean) => ({
+    background: activo ? '#111' : '#fff',
+    color: activo ? '#FFD600' : '#333',
     border: `1px solid ${activo ? '#111' : '#e5e5e5'}`,
     borderRadius: '3px',
-    padding: '4px 12px',
+    padding: '7px 14px',
     fontFamily: 'Barlow Condensed, sans-serif',
     fontWeight: 700,
-    fontSize: '12px',
-    letterSpacing: '1px',
+    fontSize: '13px',
+    letterSpacing: '0.5px',
     textTransform: 'uppercase' as const,
     cursor: 'pointer',
+    whiteSpace: 'nowrap' as const,
   })
+
+  const seccionHeaderStyle = {
+    width: '100%',
+    background: 'none',
+    border: 'none',
+    borderBottom: '1px solid #eee',
+    padding: '16px 0',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    cursor: 'pointer',
+    fontFamily: 'Barlow Condensed, sans-serif',
+    fontWeight: 700,
+    fontSize: '15px',
+    letterSpacing: '1px',
+    textTransform: 'uppercase' as const,
+    color: '#111',
+  }
+
+  const renderFlecha = (seccion: Seccion) => (
+    <span style={{
+      display: 'inline-block',
+      transform: seccionAbierta === seccion ? 'rotate(180deg)' : 'rotate(0deg)',
+      transition: 'transform 0.2s ease',
+      fontSize: '12px',
+      color: '#999',
+    }}>▾</span>
+  )
 
   return (
     <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
@@ -106,70 +156,126 @@ export default function CatalogoElectronica() {
         <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '12px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#111' }}>Electrónica</span>
       </div>
 
-      <div style={{ background: '#fff', borderBottom: '1px solid #e5e5e5', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+      <div className="catalogo-header" style={{ background: '#fff', borderBottom: '1px solid #e5e5e5', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
         <h1 style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '24px', letterSpacing: '1px', textTransform: 'uppercase', margin: 0 }}>
           Electrónica
           <span style={{ color: '#999', fontWeight: 400, fontSize: '14px', marginLeft: '8px' }}>{filtrados.length} productos</span>
         </h1>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <input type="text" placeholder="🔍 Buscar..." value={busqueda} onChange={e => setBusqueda(e.target.value)} style={{ border: '1px solid #e5e5e5', borderRadius: '4px', padding: '6px 12px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', outline: 'none', width: '140px' }} />
-          <button onClick={() => setFiltroAbierto(!filtroAbierto)} style={{ background: filtroAbierto ? '#111' : '#fff', color: filtroAbierto ? '#FFD600' : '#111', border: '1px solid #111', borderRadius: '4px', padding: '6px 14px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer' }}>⚙ Filtrar</button>
+        <div className="catalogo-header-actions" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <input type="text" placeholder="Buscar..." value={busqueda} onChange={e => setBusqueda(e.target.value)} className="catalogo-search" style={{ border: '1px solid #e5e5e5', borderRadius: '4px', padding: '6px 12px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', outline: 'none', width: '140px' }} />
+          <button onClick={() => setFiltroAbierto(true)} style={{ background: '#fff', color: '#111', border: '1px solid #111', borderRadius: '4px', padding: '6px 14px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer' }}>Filtrar</button>
         </div>
       </div>
 
       {filtroAbierto && (
-        <div style={{ background: '#fff', borderBottom: '1px solid #e5e5e5', padding: '20px 24px' }}>
-
-          <div style={{ marginBottom: '16px' }}>
-            <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#999', marginBottom: '8px' }}>Ordenar por</p>
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              {[{ val: 'precio-asc', label: 'Precio: menor a mayor' }, { val: 'precio-desc', label: 'Precio: mayor a menor' }].map(o => (
-                <button key={o.val} onClick={() => setOrden(orden === o.val ? '' : o.val)} style={btnStyle(orden === o.val)}>{o.label}</button>
-              ))}
+        <div onClick={cerrarFiltro} style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.5)',
+          zIndex: 300,
+        }}>
+          <div onClick={e => e.stopPropagation()} style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            width: '100%',
+            maxWidth: '380px',
+            background: '#fff',
+            display: 'flex',
+            flexDirection: 'column',
+            animation: 'slideInLeft 0.25s ease',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 20px', borderBottom: '1px solid #eee' }}>
+              <h2 style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '20px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>Filtros</h2>
+              <button onClick={cerrarFiltro} style={{ background: 'none', border: 'none', fontSize: '22px', color: '#999', cursor: 'pointer', padding: '4px', lineHeight: 1 }}>✕</button>
             </div>
-          </div>
 
-          <div style={{ marginBottom: '16px' }}>
-            <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#999', marginBottom: '8px' }}>Precio</p>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '10px', color: '#999', display: 'block', marginBottom: '4px' }}>Mínimo</label>
-                <input type="number" value={precioMin} onChange={e => setPrecioMin(Number(e.target.value))} placeholder="0" style={{ width: '100%', padding: '6px 10px', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', outline: 'none', boxSizing: 'border-box' as const }} />
-              </div>
-              <span style={{ color: '#ddd', marginTop: '14px' }}>—</span>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '10px', color: '#999', display: 'block', marginBottom: '4px' }}>Máximo</label>
-                <input type="number" value={precioMax} onChange={e => setPrecioMax(Number(e.target.value))} placeholder="500" style={{ width: '100%', padding: '6px 10px', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', outline: 'none', boxSizing: 'border-box' as const }} />
-              </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '0 20px' }}>
+
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('orden')}>
+                Ordenar por
+                {renderFlecha('orden')}
+              </button>
+              {seccionAbierta === 'orden' && (
+                <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  <button onClick={() => setOrden(orden === 'precio-asc' ? '' : 'precio-asc')} style={pillStyle(orden === 'precio-asc')}>Precio asc.</button>
+                  <button onClick={() => setOrden(orden === 'precio-desc' ? '' : 'precio-desc')} style={pillStyle(orden === 'precio-desc')}>Precio desc.</button>
+                </div>
+              )}
+
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('precio')}>
+                Precio
+                {renderFlecha('precio')}
+              </button>
+              {seccionAbierta === 'precio' && (
+                <div style={{ padding: '14px 0', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <input
+                    type="number"
+                    value={precioMin}
+                    onChange={e => setPrecioMin(Number(e.target.value))}
+                    placeholder="0"
+                    style={{ width: '70px', padding: '8px', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', outline: 'none', textAlign: 'center' as const, boxSizing: 'border-box' as const }}
+                  />
+                  <span style={{ color: '#bbb' }}>—</span>
+                  <input
+                    type="number"
+                    value={precioMax}
+                    onChange={e => setPrecioMax(Number(e.target.value))}
+                    placeholder="500"
+                    style={{ width: '70px', padding: '8px', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', outline: 'none', textAlign: 'center' as const, boxSizing: 'border-box' as const }}
+                  />
+                  <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#999' }}>€</span>
+                </div>
+              )}
+
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('categoria')}>
+                Categoría
+                {renderFlecha('categoria')}
+              </button>
+              {seccionAbierta === 'categoria' && (
+                <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {SUBCATEGORIAS.map(c => (
+                    <button key={c} onClick={() => setSubcategoria(c)} style={pillStyle(subcategoria === c)}>{c}</button>
+                  ))}
+                </div>
+              )}
+
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('genero')}>
+                Género
+                {renderFlecha('genero')}
+              </button>
+              {seccionAbierta === 'genero' && (
+                <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {['Todo', 'Hombre', 'Mujer', 'Unisex'].map(g => (
+                    <button key={g} onClick={() => setGenero(g)} style={pillStyle(genero === g)}>{g}</button>
+                  ))}
+                </div>
+              )}
+
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('marca')}>
+                Marca
+                {renderFlecha('marca')}
+              </button>
+              {seccionAbierta === 'marca' && (
+                <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {marcas.map(m => (
+                    <button key={m} onClick={() => setMarca(m)} style={pillStyle(marca === m)}>{m}</button>
+                  ))}
+                </div>
+              )}
+
             </div>
-          </div>
 
-          <div style={{ marginBottom: '16px' }}>
-            <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#999', marginBottom: '8px' }}>Categoría</p>
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              {SUBCATEGORIAS.map(c => (
-                <button key={c} onClick={() => setSubcategoria(c)} style={btnStyle(subcategoria === c)}>{c}</button>
-              ))}
+            <div style={{ display: 'flex', gap: '10px', padding: '16px 20px', borderTop: '1px solid #eee' }}>
+              <button onClick={limpiarFiltros} style={{ flex: 1, background: '#fff', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', color: '#999', cursor: 'pointer', padding: '12px' }}>Limpiar</button>
+              <button onClick={cerrarFiltro} style={{ flex: 2, background: '#111', color: '#FFD600', border: 'none', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '14px', letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer', padding: '12px' }}>Ver {filtrados.length} resultados</button>
             </div>
-          </div>
-
-          <div style={{ marginBottom: '16px' }}>
-            <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#999', marginBottom: '8px' }}>Género</p>
-            <div style={{ display: 'flex', gap: '6px' }}>
-              {['Todo', 'Hombre', 'Mujer'].map(g => (
-                <button key={g} onClick={() => setGenero(g)} style={btnStyle(genero === g)}>{g}</button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '14px', borderTop: '1px solid #f0f0f0' }}>
-            <button onClick={limpiarFiltros} style={{ background: 'none', border: 'none', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', color: '#999', cursor: 'pointer', textDecoration: 'underline' }}>Limpiar filtros</button>
-            <button onClick={() => setFiltroAbierto(false)} style={{ background: '#111', color: '#FFD600', border: 'none', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase', padding: '10px 20px', cursor: 'pointer' }}>Ver {filtrados.length} resultados</button>
           </div>
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px', padding: '20px 24px' }}>
+      <div className="catalogo-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px', padding: '20px 24px' }}>
         {cargando
           ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
           : filtrados.length === 0

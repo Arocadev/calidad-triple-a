@@ -58,20 +58,22 @@ export default defineType({
       options: {
         list: [
           // Ropa
-          { title: 'Zapatillas', value: 'zapatillas' },
+          { title: 'Zapatillas y chanclas', value: 'zapatillas' },
           { title: 'Camisetas', value: 'camisetas' },
           { title: 'Conjuntos', value: 'conjuntos' },
           { title: 'Pantalones', value: 'pantalones' },
+          { title: 'Ropa interior', value: 'ropa_interior' },
           // Complementos
+          { title: 'Gafas de sol', value: 'gafas' },
           { title: 'Gorras', value: 'gorras' },
-          { title: 'Carteras', value: 'carteras' },
           { title: 'Bandoleras', value: 'bandoleras' },
-          { title: 'Relojes', value: 'relojes' },
-          { title: 'Gafas', value: 'gafas' },
+          { title: 'Carteras y tarjeteros', value: 'carteras' },
           // Electrónica
+          { title: 'Cargadores', value: 'cargadores' },
           { title: 'Auriculares', value: 'auriculares' },
-          { title: 'Gadgets', value: 'gadgets' },
-          { title: 'Accesorios', value: 'accesorios' },
+          { title: 'Altavoces', value: 'altavoces' },
+          { title: 'Relojes inteligentes', value: 'relojes' },
+          { title: 'Fundas', value: 'fundas' },
         ],
       },
       validation: (Rule) => Rule.required(),

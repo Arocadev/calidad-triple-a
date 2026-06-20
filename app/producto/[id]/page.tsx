@@ -97,7 +97,7 @@ export default function Producto() {
         <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', color: '#111' }}>{producto.name}</span>
       </div>
 
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+      <div className="producto-grid" style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
 
         <div style={{ background: '#fff', border: '1px solid #e5e5e5', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '360px', overflow: 'hidden' }}>
           {producto.images?.[0] ? (

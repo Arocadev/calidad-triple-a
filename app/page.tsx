@@ -21,7 +21,7 @@ export default function Home() {
           Ropa · Complementos
         </p>
 
-        <h1 className="hero-title" style={{
+        <h1 className="hero-title home-title" style={{
           fontFamily: 'Barlow Condensed, sans-serif',
           fontWeight: 900,
           fontSize: '100px',
@@ -90,7 +90,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div style={{
+      <div className="trust-bar" style={{
         background: 'var(--amarillo)',
         padding: '12px 24px',
         display: 'flex',

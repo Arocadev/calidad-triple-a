@@ -21,7 +21,7 @@ export default function Catalogo() {
         }}>Catálogo</h1>
       </div>
 
-      <div style={{
+      <div className="catalogo-hub-grid" style={{
         maxWidth: '900px',
         margin: '0 auto',
         padding: '48px 24px',

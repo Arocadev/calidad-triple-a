@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer style={{
+    <footer className="footer-grid" style={{
       background: 'var(--negro)',
       padding: '14px 24px',
       display: 'grid',
