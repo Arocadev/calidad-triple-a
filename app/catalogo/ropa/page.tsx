@@ -2,19 +2,36 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { IconShirt, IconShoe } from '@tabler/icons-react'
+import { client } from '@/sanity/lib/client'
+import { urlFor } from '@/sanity/lib/image'
 import { useCartStore } from '@/store/cartStore'
 import Toast from '@/app/components/Toast'
 import SkeletonCard from '@/app/components/SkeletonCard'
 
 const SUBCATEGORIAS = ['Todo', 'Zapatillas', 'Camisetas', 'Conjuntos', 'Pantalones']
 
-const productos = [
-  { id: '1', nombre: 'Air Max 90', marca: 'Nike', precio: 89, categoria: 'Zapatillas', genero: 'Masculino', tallas: ['39', '40', '41', '42', '43', '44'], badge: 'Destacado' as string | null, icon: <IconShoe size={36} stroke={1.5} color="#bbb" /> },
-  { id: '2', nombre: 'Camiseta Essential', marca: 'Adidas', precio: 24, categoria: 'Camisetas', genero: 'Unisex', tallas: ['XS', 'S', 'M', 'L', 'XL'], badge: 'Nuevo' as string | null, icon: <IconShirt size={36} stroke={1.5} color="#bbb" /> },
-]
+interface SanityProduct {
+  _id: string
+  name: string
+  slug: { current: string }
+  price: number
+  brand: string
+  subCategory: string
+  gender: string
+  badge: string
+  images: any[]
+  sizes: { size: string; stock: number }[]
+}
+
+const subCatLabel: Record<string, string> = {
+  zapatillas: 'Zapatillas',
+  camisetas: 'Camisetas',
+  conjuntos: 'Conjuntos',
+  pantalones: 'Pantalones',
+}
 
 export default function CatalogoRopa() {
+  const [productos, setProductos] = useState<SanityProduct[]>([])
   const [subcategoria, setSubcategoria] = useState('Todo')
   const [genero, setGenero] = useState('Todo')
   const [busqueda, setBusqueda] = useState('')
@@ -29,28 +46,35 @@ export default function CatalogoRopa() {
   const addItem = useCartStore(state => state.addItem)
 
   useEffect(() => {
-    const t = setTimeout(() => setCargando(false), 800)
-    return () => clearTimeout(t)
+    const fetchProductos = async () => {
+      const query = `*[_type == "product" && mainCategory == "ropa"]{
+        _id, name, slug, price, brand, subCategory, gender, badge, images, sizes
+      }`
+      const data = await client.fetch(query)
+      setProductos(data)
+      setCargando(false)
+    }
+    fetchProductos()
   }, [])
 
   const filtrados = productos
     .filter(p => {
-      const matchCat = subcategoria === 'Todo' || p.categoria === subcategoria
-      const matchGen = genero === 'Todo' || p.genero === genero || p.genero === 'Unisex'
-      const matchBusqueda = p.nombre.toLowerCase().includes(busqueda.toLowerCase()) || p.marca.toLowerCase().includes(busqueda.toLowerCase())
-      const matchPrecio = p.precio >= precioMin && p.precio <= precioMax
+      const matchCat = subcategoria === 'Todo' || subCatLabel[p.subCategory] === subcategoria
+      const matchGen = genero === 'Todo' || p.gender === genero.toLowerCase() || p.gender === 'unisex'
+      const matchBusqueda = p.name.toLowerCase().includes(busqueda.toLowerCase()) || p.brand.toLowerCase().includes(busqueda.toLowerCase())
+      const matchPrecio = p.price >= precioMin && p.price <= precioMax
       return matchCat && matchGen && matchBusqueda && matchPrecio
     })
     .sort((a, b) => {
-      if (orden === 'precio-asc') return a.precio - b.precio
-      if (orden === 'precio-desc') return b.precio - a.precio
+      if (orden === 'precio-asc') return a.price - b.price
+      if (orden === 'precio-desc') return b.price - a.price
       return 0
     })
 
-  const handleAnadir = (p: typeof productos[0], talla: string) => {
-    addItem({ id: p.id, name: p.nombre, brand: p.marca, price: p.precio, size: talla, quantity: 1 })
+  const handleAnadir = (p: SanityProduct, talla: string) => {
+    addItem({ id: p._id, name: p.name, brand: p.brand, price: p.price, size: talla, quantity: 1 })
     setTallasAbiertas(null)
-    setToastMsg(`${p.nombre} añadido`)
+    setToastMsg(`${p.name} añadido`)
     setToastVisible(prev => !prev)
   }
 
@@ -154,37 +178,43 @@ export default function CatalogoRopa() {
           : filtrados.length === 0
             ? <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '48px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '16px', color: '#999', textTransform: 'uppercase', letterSpacing: '2px' }}>No se encontraron productos</div>
             : filtrados.map(p => (
-              <div key={p.id} style={{ background: '#fff', border: '1px solid #e5e5e5', borderRadius: '6px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
+              <div key={p._id} style={{ background: '#fff', border: '1px solid #e5e5e5', borderRadius: '6px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
                 onMouseEnter={e => (e.currentTarget.style.borderColor = '#FFD600')}
                 onMouseLeave={e => (e.currentTarget.style.borderColor = '#e5e5e5')}
               >
-                {p.badge && (
-                  <div style={{ position: 'absolute', top: '8px', left: '8px', background: p.badge === 'Nuevo' ? '#FFD600' : '#111', color: p.badge === 'Nuevo' ? '#111' : '#FFD600', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', zIndex: 1 }}>{p.badge}</div>
+                {p.badge && p.badge !== 'none' && (
+                  <div style={{ position: 'absolute', top: '8px', left: '8px', background: p.badge === 'nuevo' ? '#FFD600' : '#111', color: p.badge === 'nuevo' ? '#111' : '#FFD600', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', zIndex: 1 }}>{p.badge}</div>
                 )}
-                <Link href={`/producto/${p.id}`} style={{ textDecoration: 'none' }}>
-                  <div style={{ background: '#f5f5f5', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{p.icon}</div>
+                <Link href={`/producto/${p.slug.current}`} style={{ textDecoration: 'none' }}>
+                  <div style={{ background: '#f5f5f5', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {p.images?.[0] ? (
+                      <img src={urlFor(p.images[0]).width(300).height(300).url()} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px' }} />
+                    ) : (
+                      <span style={{ color: '#bbb', fontSize: '12px' }}>Sin imagen</span>
+                    )}
+                  </div>
                 </Link>
                 <div style={{ padding: '10px' }}>
-                  <Link href={`/producto/${p.id}`} style={{ textDecoration: 'none' }}>
-                    <div style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', color: '#999', textTransform: 'uppercase', marginBottom: '2px' }}>{p.marca}</div>
-                    <div style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '15px', color: '#111', marginBottom: '8px' }}>{p.nombre}</div>
+                  <Link href={`/producto/${p.slug.current}`} style={{ textDecoration: 'none' }}>
+                    <div style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', color: '#999', textTransform: 'uppercase', marginBottom: '2px' }}>{p.brand}</div>
+                    <div style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '15px', color: '#111', marginBottom: '8px' }}>{p.name}</div>
                   </Link>
-                  {tallasAbiertas === p.id ? (
+                  {tallasAbiertas === p._id ? (
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
                         <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', color: '#999', textTransform: 'uppercase', margin: 0 }}>Talla</p>
                         <button onClick={() => setTallasAbiertas(null)} style={{ background: 'none', border: 'none', color: '#bbb', fontSize: '14px', cursor: 'pointer', padding: 0 }}>✕</button>
                       </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                        {p.tallas.map(t => (
-                          <button key={t} onClick={() => handleAnadir(p, t)} style={{ background: '#111', color: '#FFD600', border: 'none', borderRadius: '3px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '11px', padding: '4px 8px', cursor: 'pointer' }}>{t}</button>
+                        {p.sizes?.filter(s => s.stock > 0).map(s => (
+                          <button key={s.size} onClick={() => handleAnadir(p, s.size)} style={{ background: '#111', color: '#FFD600', border: 'none', borderRadius: '3px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '11px', padding: '4px 8px', cursor: 'pointer' }}>{s.size}</button>
                         ))}
                       </div>
                     </div>
                   ) : (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '18px', color: '#111' }}>{p.precio}€</span>
-                      <button onClick={() => setTallasAbiertas(p.id)} style={{ background: '#111', color: '#FFD600', border: 'none', borderRadius: '3px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '11px', letterSpacing: '1px', padding: '5px 10px', cursor: 'pointer', textTransform: 'uppercase' }}>+ Añadir</button>
+                      <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '18px', color: '#111' }}>{p.price}€</span>
+                      <button onClick={() => setTallasAbiertas(p._id)} style={{ background: '#111', color: '#FFD600', border: 'none', borderRadius: '3px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '11px', letterSpacing: '1px', padding: '5px 10px', cursor: 'pointer', textTransform: 'uppercase' }}>+ Añadir</button>
                     </div>
                   )}
                 </div>

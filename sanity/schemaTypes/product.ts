@@ -38,18 +38,41 @@ export default defineType({
       validation: (Rule) => Rule.min(1).error('Añade al menos una imagen'),
     }),
     defineField({
-      name: 'category',
-      title: 'Categoría',
+      name: 'mainCategory',
+      title: 'Categoría principal',
       type: 'string',
       options: {
         list: [
-          { title: 'Zapatillas', value: 'zapatillas' },
-          { title: 'Camisetas', value: 'camisetas' },
-          { title: 'Gorras', value: 'gorras' },
+          { title: 'Ropa', value: 'ropa' },
           { title: 'Complementos', value: 'complementos' },
           { title: 'Electrónica', value: 'electronica' },
         ],
         layout: 'radio',
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'subCategory',
+      title: 'Subcategoría',
+      type: 'string',
+      options: {
+        list: [
+          // Ropa
+          { title: 'Zapatillas', value: 'zapatillas' },
+          { title: 'Camisetas', value: 'camisetas' },
+          { title: 'Conjuntos', value: 'conjuntos' },
+          { title: 'Pantalones', value: 'pantalones' },
+          // Complementos
+          { title: 'Gorras', value: 'gorras' },
+          { title: 'Carteras', value: 'carteras' },
+          { title: 'Bandoleras', value: 'bandoleras' },
+          { title: 'Relojes', value: 'relojes' },
+          { title: 'Gafas', value: 'gafas' },
+          // Electrónica
+          { title: 'Auriculares', value: 'auriculares' },
+          { title: 'Gadgets', value: 'gadgets' },
+          { title: 'Accesorios', value: 'accesorios' },
+        ],
       },
       validation: (Rule) => Rule.required(),
     }),
@@ -59,9 +82,9 @@ export default defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Masculino', value: 'masculino' },
-          { title: 'Femenino', value: 'femenino' },
-          { title: 'Ambos', value: 'ambos' },
+          { title: 'Hombre', value: 'hombre' },
+          { title: 'Mujer', value: 'mujer' },
+          { title: 'Unisex', value: 'unisex' },
         ],
         layout: 'radio',
       },
@@ -72,6 +95,20 @@ export default defineType({
       title: 'Marca',
       type: 'string',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'badge',
+      title: 'Etiqueta',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Ninguna', value: 'none' },
+          { title: 'Nuevo', value: 'nuevo' },
+          { title: 'Destacado', value: 'destacado' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'none',
     }),
     defineField({
       name: 'sizes',
