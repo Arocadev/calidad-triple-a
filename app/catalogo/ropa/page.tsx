@@ -31,13 +31,14 @@ const subCatLabel: Record<string, string> = {
   ropa_interior: 'Ropa interior',
 }
 
-type Seccion = 'orden' | 'precio' | 'categoria' | 'genero' | 'marca' | null
+type Seccion = 'orden' | 'precio' | 'categoria' | 'genero' | 'marca' | 'talla' | null
 
 export default function CatalogoRopa() {
   const [productos, setProductos] = useState<SanityProduct[]>([])
   const [subcategoria, setSubcategoria] = useState('Todo')
   const [genero, setGenero] = useState('Todo')
-  const [marca, setMarca] = useState('Todo')
+  const [marcasSel, setMarcasSel] = useState<string[]>([])
+  const [tallasSel, setTallasSel] = useState<string[]>([])
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState('')
   const [filtroAbierto, setFiltroAbierto] = useState(false)
@@ -62,16 +63,25 @@ export default function CatalogoRopa() {
     fetchProductos()
   }, [])
 
-  const marcas = ['Todo', ...Array.from(new Set(productos.map(p => p.brand))).sort()]
+  const marcas = Array.from(new Set(productos.map(p => p.brand))).sort()
+  const tallasDisponibles = Array.from(new Set(productos.flatMap(p => p.sizes?.map(s => s.size) || []))).sort()
+
+  const toggleMarca = (m: string) => {
+    setMarcasSel(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m])
+  }
+  const toggleTalla = (t: string) => {
+    setTallasSel(prev => prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t])
+  }
 
   const filtrados = productos
     .filter(p => {
       const matchCat = subcategoria === 'Todo' || subCatLabel[p.subCategory] === subcategoria
       const matchGen = genero === 'Todo' || p.gender === genero.toLowerCase() || p.gender === 'unisex'
-      const matchMarca = marca === 'Todo' || p.brand === marca
+      const matchMarca = marcasSel.length === 0 || marcasSel.includes(p.brand)
+      const matchTalla = tallasSel.length === 0 || p.sizes?.some(s => tallasSel.includes(s.size) && s.stock > 0)
       const matchBusqueda = p.name.toLowerCase().includes(busqueda.toLowerCase()) || p.brand.toLowerCase().includes(busqueda.toLowerCase())
       const matchPrecio = p.price >= precioMin && p.price <= precioMax
-      return matchCat && matchGen && matchMarca && matchBusqueda && matchPrecio
+      return matchCat && matchGen && matchMarca && matchTalla && matchBusqueda && matchPrecio
     })
     .sort((a, b) => {
       if (orden === 'precio-asc') return a.price - b.price
@@ -89,7 +99,8 @@ export default function CatalogoRopa() {
   const limpiarFiltros = () => {
     setSubcategoria('Todo')
     setGenero('Todo')
-    setMarca('Todo')
+    setMarcasSel([])
+    setTallasSel([])
     setOrden('')
     setPrecioMin(0)
     setPrecioMax(500)
@@ -147,6 +158,8 @@ export default function CatalogoRopa() {
     }}>▾</span>
   )
 
+  const contadorFiltros = marcasSel.length + tallasSel.length + (genero !== 'Todo' ? 1 : 0) + (subcategoria !== 'Todo' ? 1 : 0)
+
   return (
     <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
 
@@ -163,7 +176,12 @@ export default function CatalogoRopa() {
         </h1>
         <div className="catalogo-header-actions" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <input type="text" placeholder="Buscar..." value={busqueda} onChange={e => setBusqueda(e.target.value)} className="catalogo-search" style={{ border: '1px solid #e5e5e5', borderRadius: '4px', padding: '6px 12px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', outline: 'none', width: '140px' }} />
-          <button onClick={() => setFiltroAbierto(true)} style={{ background: '#fff', color: '#111', border: '1px solid #111', borderRadius: '4px', padding: '6px 14px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer' }}>Filtrar</button>
+          <button onClick={() => setFiltroAbierto(true)} style={{ background: '#fff', color: '#111', border: '1px solid #111', borderRadius: '4px', padding: '6px 14px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            Filtrar
+            {contadorFiltros > 0 && (
+              <span style={{ background: '#FFD600', color: '#111', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{contadorFiltros}</span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -199,8 +217,8 @@ export default function CatalogoRopa() {
               </button>
               {seccionAbierta === 'orden' && (
                 <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  <button onClick={() => setOrden(orden === 'precio-asc' ? '' : 'precio-asc')} style={pillStyle(orden === 'precio-asc')}>Precio asc.</button>
-                  <button onClick={() => setOrden(orden === 'precio-desc' ? '' : 'precio-desc')} style={pillStyle(orden === 'precio-desc')}>Precio desc.</button>
+                  <button onClick={() => setOrden(orden === 'precio-asc' ? '' : 'precio-asc')} style={pillStyle(orden === 'precio-asc')}>Precio ascendente</button>
+                  <button onClick={() => setOrden(orden === 'precio-desc' ? '' : 'precio-desc')} style={pillStyle(orden === 'precio-desc')}>Precio descendente</button>
                 </div>
               )}
 
@@ -253,15 +271,33 @@ export default function CatalogoRopa() {
                 </div>
               )}
 
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('talla')}>
+                Talla
+                {tallasSel.length > 0 && <span style={{ fontSize: '12px', color: '#999', fontWeight: 400 }}>{tallasSel.length} seleccionadas</span>}
+                {renderFlecha('talla')}
+              </button>
+              {seccionAbierta === 'talla' && (
+                <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {tallasDisponibles.length === 0
+                    ? <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#999' }}>Sin tallas disponibles</span>
+                    : tallasDisponibles.map(t => (
+                      <button key={t} onClick={() => toggleTalla(t)} style={pillStyle(tallasSel.includes(t))}>{t}</button>
+                    ))}
+                </div>
+              )}
+
               <button style={seccionHeaderStyle} onClick={() => toggleSeccion('marca')}>
                 Marca
+                {marcasSel.length > 0 && <span style={{ fontSize: '12px', color: '#999', fontWeight: 400 }}>{marcasSel.length} seleccionadas</span>}
                 {renderFlecha('marca')}
               </button>
               {seccionAbierta === 'marca' && (
                 <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {marcas.map(m => (
-                    <button key={m} onClick={() => setMarca(m)} style={pillStyle(marca === m)}>{m}</button>
-                  ))}
+                  {marcas.length === 0
+                    ? <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#999' }}>Sin marcas disponibles</span>
+                    : marcas.map(m => (
+                      <button key={m} onClick={() => toggleMarca(m)} style={pillStyle(marcasSel.includes(m))}>{m}</button>
+                    ))}
                 </div>
               )}
 
