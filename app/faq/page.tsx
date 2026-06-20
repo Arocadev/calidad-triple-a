@@ -7,7 +7,7 @@ export default function FAQ() {
       preguntas: [
         {
           q: '¿Qué tipo de productos vendéis?',
-          a: 'Vendemos réplicas de ropa y complementos de marcas conocidas. Todos nuestros productos son de calidad AAA — la más alta del mercado de réplicas — y pasan un control de calidad antes de enviarse.',
+          a: 'Vendemos réplicas de ropa, complementos y electrónica de marcas conocidas. Todos nuestros productos son de calidad AAA — la más alta del mercado de réplicas — y pasan un control de calidad antes de enviarse.',
         },
         {
           q: '¿Los productos tienen buena calidad?',
@@ -18,8 +18,8 @@ export default function FAQ() {
           a: 'Las imágenes son reales, pero puede haber pequeñas diferencias de color debido a la luz y la pantalla. Si tienes dudas, contáctanos antes de comprar.',
         },
         {
-          q: '¿Cómo cuido y lavo las camisetas?',
-          a: 'Recomendamos lavar a mano o a máquina del revés. Evita la secadora y no planche directamente sobre estampados.',
+          q: '¿Cómo cuido mis productos?',
+          a: 'Para ropa, recomendamos lavar a mano o a máquina del revés, evitando la secadora y sin planchar directamente sobre estampados. Para complementos y electrónica, consulta las indicaciones específicas que te enviamos junto al producto.',
         },
       ],
     },

@@ -23,9 +23,9 @@ interface SanityProduct {
 }
 
 const subCatLabel: Record<string, string> = {
-  zapatillas: 'Zapatillas', camisetas: 'Camisetas', conjuntos: 'Conjuntos', pantalones: 'Pantalones',
-  gorras: 'Gorras', carteras: 'Carteras', bandoleras: 'Bandoleras', relojes: 'Relojes', gafas: 'Gafas',
-  auriculares: 'Auriculares', gadgets: 'Gadgets', accesorios: 'Accesorios',
+  zapatillas: 'Zapatillas y chanclas', camisetas: 'Camisetas', conjuntos: 'Conjuntos', pantalones: 'Pantalones', ropa_interior: 'Ropa interior',
+  gafas: 'Gafas de sol', gorras: 'Gorras', bandoleras: 'Bandoleras', carteras: 'Carteras y tarjeteros',
+  cargadores: 'Cargadores', auriculares: 'Auriculares', altavoces: 'Altavoces', relojes: 'Relojes inteligentes', fundas: 'Fundas',
 }
 
 export default function Producto() {
@@ -36,6 +36,7 @@ export default function Producto() {
   const [relacionados, setRelacionados] = useState<SanityProduct[]>([])
   const [cargando, setCargando] = useState(true)
   const [tallaSeleccionada, setTallaSeleccionada] = useState<string | null>(null)
+  const [imagenActiva, setImagenActiva] = useState(0)
   const [toastVisible, setToastVisible] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
 
@@ -46,6 +47,7 @@ export default function Producto() {
       }`
       const data = await client.fetch(query, { slug: id })
       setProducto(data)
+      setImagenActiva(0)
 
       if (data) {
         const relQuery = `*[_type == "product" && mainCategory == $cat && _id != $id][0...3]{
@@ -86,6 +88,8 @@ export default function Producto() {
     setToastVisible(prev => !prev)
   }
 
+  const tieneVariasImagenes = producto.images && producto.images.length > 1
+
   return (
     <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
 
@@ -99,11 +103,37 @@ export default function Producto() {
 
       <div className="producto-grid" style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
 
-        <div style={{ background: '#fff', border: '1px solid #e5e5e5', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '360px', overflow: 'hidden' }}>
-          {producto.images?.[0] ? (
-            <img src={urlFor(producto.images[0]).width(600).url()} alt={producto.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <span style={{ color: '#bbb' }}>Sin imagen</span>
+        <div>
+          <div style={{ background: '#fff', border: '1px solid #e5e5e5', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '360px', overflow: 'hidden' }}>
+            {producto.images?.[imagenActiva] ? (
+              <img src={urlFor(producto.images[imagenActiva]).width(600).url()} alt={producto.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '16px' }} />
+            ) : (
+              <span style={{ color: '#bbb' }}>Sin imagen</span>
+            )}
+          </div>
+
+          {tieneVariasImagenes && (
+            <div style={{ display: 'flex', gap: '8px', marginTop: '10px', flexWrap: 'wrap' }}>
+              {producto.images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setImagenActiva(i)}
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    padding: 0,
+                    background: '#fff',
+                    border: `2px solid ${imagenActiva === i ? '#FFD600' : '#e5e5e5'}`,
+                    borderRadius: '4px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    flexShrink: 0,
+                  }}
+                >
+                  <img src={urlFor(img).width(120).height(120).url()} alt={`${producto.name} ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </button>
+              ))}
+            </div>
           )}
         </div>
 
@@ -197,7 +227,7 @@ export default function Producto() {
                 >
                   <div style={{ background: '#f5f5f5', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {p.images?.[0] ? (
-                      <img src={urlFor(p.images[0]).width(200).height(200).url()} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={urlFor(p.images[0]).width(200).height(200).url()} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '10px' }} />
                     ) : (
                       <span style={{ color: '#bbb', fontSize: '11px' }}>Sin imagen</span>
                     )}

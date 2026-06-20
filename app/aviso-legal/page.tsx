@@ -36,7 +36,7 @@ export default function AvisoLegal() {
 
         <h2 style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '18px', textTransform: 'uppercase', letterSpacing: '1px', color: '#111', marginBottom: '12px', marginTop: '28px' }}>4. Protección de datos</h2>
         <p style={{ fontFamily: 'Barlow, sans-serif', fontSize: '15px', color: '#555', lineHeight: 1.7, marginBottom: '16px' }}>
-          Los datos personales recogidos a través del formulario de pedido (nombre y teléfono) serán utilizados exclusivamente para gestionar el pedido y contactar con el cliente. No se cederán a terceros. El usuario puede ejercer sus derechos de acceso, rectificación y supresión contactando en calidadtriplea.info@gmail.com.
+          Los datos personales recogidos a través del formulario de pedido (nombre, teléfono y dirección de envío) serán utilizados exclusivamente para gestionar el pedido y contactar con el cliente. No se cederán a terceros. El usuario puede ejercer sus derechos de acceso, rectificación y supresión contactando en calidadtriplea.info@gmail.com.
         </p>
 
         <h2 style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '18px', textTransform: 'uppercase', letterSpacing: '1px', color: '#111', marginBottom: '12px', marginTop: '28px' }}>5. Responsabilidad</h2>
