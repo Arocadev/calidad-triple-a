@@ -161,14 +161,16 @@ export default function Pedido() {
     setPopup(false)
     setEnviando(true)
     try {
+      const doc = await generarPDF()
+      const pdfBase64 = doc.output('datauristring')
+
       const res = await fetch('/api/pedido', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal, notas, items, total }),
+        body: JSON.stringify({ nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal, notas, items, total, pdfBase64 }),
       })
       if (res.ok) {
         const data = await res.json()
-        const doc = await generarPDF()
         doc.save(`pedido-${nombre.replace(' ', '-')}-${Date.now()}.pdf`)
         guardarDatosCliente()
         setEnviado(true)

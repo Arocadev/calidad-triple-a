@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import QRCode from 'qrcode'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -39,6 +40,19 @@ ${lineasProductos}
 
   const whatsappUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(resumenTexto)}`
 
+  const datosEnvioTexto = `${nombre}\n${telefono}\n${direccion}\n${codigoPostal} ${ciudad}\n${provincia}, ${pais}`
+
+  let qrBase64 = ''
+  try {
+    qrBase64 = await QRCode.toDataURL(datosEnvioTexto, {
+      width: 280,
+      margin: 1,
+      color: { dark: '#111111', light: '#FFFFFF' },
+    })
+  } catch (e) {
+    console.error('Error generando QR:', e)
+  }
+
   try {
     await resend.emails.send({
       from: 'pedidos@calidadtriplea.es',
@@ -73,6 +87,20 @@ ${lineasProductos}
               <strong style="font-size: 24px;">${total.toFixed(0)}€</strong>
             </div>
           </div>
+          ${qrBase64 ? `
+          <div style="padding: 24px; border: 1px solid #e5e5e5; border-top: none; text-align: center;">
+            <p style="margin: 0 0 4px; font-size: 13px; font-weight: bold; color: #666; text-transform: uppercase; letter-spacing: 1px;">QR para el envío</p>
+            <p style="margin: 0 0 16px; font-size: 12px; color: #999;">Escanea para ver los datos de envío al empaquetar</p>
+            <img src="${qrBase64}" alt="QR datos de envío" width="180" height="180" style="display: block; margin: 0 auto;" />
+            <div style="margin-top: 16px; padding: 12px; background: #f9f9f9; border-radius: 4px; text-align: left; font-size: 13px; color: #333; line-height: 1.6;">
+              <strong>${nombre}</strong><br/>
+              ${telefono}<br/>
+              ${direccion}<br/>
+              ${codigoPostal} ${ciudad}<br/>
+              ${provincia}, ${pais}
+            </div>
+          </div>
+          ` : ''}
           <div style="background: #FFD600; padding: 12px; text-align: center;">
             <p style="margin: 0; font-weight: bold; color: #111;">Contacta al cliente por Bizum o PayPal</p>
           </div>
