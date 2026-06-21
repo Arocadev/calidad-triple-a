@@ -6,8 +6,13 @@ export default function Home() {
     <>
       <section style={{
         background: 'var(--negro)',
-        padding: '0 24px 0',
+        padding: '24px',
         textAlign: 'center',
+        minHeight: 'calc(100vh - 280px)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}>
         <img
           src="/logo-hero.png"
@@ -38,10 +43,10 @@ export default function Home() {
           textTransform: 'uppercase',
           marginBottom: '8px',
         }}>
-          La misma actitud, diferente precio
+          La misma calidad, diferente precio
         </p>
 
-        <div>
+        <div style={{ width: '100%' }}>
           <div className="hero-cats" style={{
             display: 'flex',
             width: '100%',
@@ -83,7 +88,7 @@ export default function Home() {
 
       <div className="trust-bar">
         {[
-          { text: 'Calidad AAA', icon: <IconRosette size={18} stroke={1.8} color="#111" /> },
+          { text: 'Calidad AAA+', icon: <IconRosette size={18} stroke={1.8} color="#111" /> },
           { text: 'Envío rápido', icon: <IconTruckDelivery size={18} stroke={1.8} color="#111" /> },
           { text: 'Pedido por WhatsApp', icon: <IconBrandWhatsapp size={18} stroke={1.8} color="#111" /> },
         ].map((item, i) => (
