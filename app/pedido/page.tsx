@@ -21,6 +21,9 @@ const GASTOS_ENVIO: Record<string, number> = {
   'Otros': 15,
 }
 
+const ENVIO_GRATIS_MINIMO = 60
+const PAIS_ENVIO_GRATIS = 'España'
+
 export default function Pedido() {
   const { items, clearCart } = useCartStore()
   const router = useRouter()
@@ -40,7 +43,8 @@ export default function Pedido() {
   const [popup, setPopup] = useState(false)
 
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
-  const gastoEnvio = pais ? (GASTOS_ENVIO[pais] ?? GASTOS_ENVIO['Otros']) : 0
+  const envioGratis = pais === PAIS_ENVIO_GRATIS && subtotal >= ENVIO_GRATIS_MINIMO
+  const gastoEnvio = pais ? (envioGratis ? 0 : (GASTOS_ENVIO[pais] ?? GASTOS_ENVIO['Otros'])) : 0
   const total = subtotal + gastoEnvio
   const camposObligatorios = nombre && telefono && pais && provincia && ciudad && calle && numero && codigoPostal
 
@@ -178,7 +182,7 @@ export default function Pedido() {
     doc.text(`${subtotal.toFixed(2)}€`, 190, y, { align: 'right' })
     y += 8
     doc.text('Gastos de envío', 20, y)
-    doc.text(`${gastoEnvio.toFixed(2)}€`, 190, y, { align: 'right' })
+    doc.text(envioGratis ? 'GRATIS' : `${gastoEnvio.toFixed(2)}€`, 190, y, { align: 'right' })
     y += 10
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(14)
@@ -201,6 +205,11 @@ export default function Pedido() {
   const handlePedido = async () => {
     setPopup(false)
     setEnviando(true)
+
+    // Abrir la pestaña de WhatsApp inmediatamente (síncrono, antes de cualquier await)
+    // para evitar el bloqueo de pop-ups de Safari en iOS
+    const whatsappWindow = window.open('', '_blank')
+
     try {
       const doc = await generarPDF()
       const pdfBase64 = doc.output('datauristring')
@@ -217,10 +226,17 @@ export default function Pedido() {
         guardarDatosCliente()
         setEnviado(true)
         clearCart()
-        window.open(data.whatsappUrl, '_blank')
+        if (whatsappWindow) {
+          whatsappWindow.location.href = data.whatsappUrl
+        } else {
+          window.open(data.whatsappUrl, '_blank')
+        }
+      } else {
+        if (whatsappWindow) whatsappWindow.close()
       }
     } catch (e) {
       console.error(e)
+      if (whatsappWindow) whatsappWindow.close()
     } finally {
       setEnviando(false)
     }
@@ -300,7 +316,7 @@ export default function Pedido() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
                 <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#999' }}>Gastos de envío</span>
-                <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#666' }}>{gastoEnvio.toFixed(2)}€</span>
+                <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: envioGratis ? '#1a9e4f' : '#666', fontWeight: envioGratis ? 700 : 400 }}>{envioGratis ? 'GRATIS' : `${gastoEnvio.toFixed(2)}€`}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
                 <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '14px', color: '#999', textTransform: 'uppercase', letterSpacing: '1px' }}>Total</span>
@@ -382,8 +398,15 @@ export default function Pedido() {
             <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#999' }}>
               Gastos de envío {!pais && <span style={{ color: '#bbb' }}>(selecciona país)</span>}
             </span>
-            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#666' }}>{pais ? `${gastoEnvio.toFixed(2)}€` : '—'}</span>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: envioGratis ? '#1a9e4f' : '#666', fontWeight: envioGratis ? 700 : 400 }}>
+              {pais ? (envioGratis ? 'GRATIS' : `${gastoEnvio.toFixed(2)}€`) : '—'}
+            </span>
           </div>
+          {pais === PAIS_ENVIO_GRATIS && !envioGratis && (
+            <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '12px', color: '#999', margin: '4px 0 0' }}>
+              Añade {(ENVIO_GRATIS_MINIMO - subtotal).toFixed(2)}€ más y el envío es gratis
+            </p>
+          )}
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
             <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '16px', color: '#999', textTransform: 'uppercase', letterSpacing: '2px' }}>Total</span>
             <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '28px', color: '#111' }}>{total.toFixed(2)}€</span>
@@ -412,7 +435,11 @@ export default function Pedido() {
             </select>
             {pais && (
               <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '12px', color: '#999', marginTop: '6px' }}>
-                Gastos de envío a {pais}: <strong style={{ color: '#111' }}>{gastoEnvio.toFixed(2)}€</strong>
+                {envioGratis ? (
+                  <span style={{ color: '#1a9e4f', fontWeight: 700 }}>Envío gratis aplicado ✓</span>
+                ) : (
+                  <>Gastos de envío a {pais}: <strong style={{ color: '#111' }}>{gastoEnvio.toFixed(2)}€</strong></>
+                )}
               </p>
             )}
           </div>

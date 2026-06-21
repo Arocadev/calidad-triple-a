@@ -45,7 +45,7 @@ export default function FAQ() {
         },
         {
           q: '¿Cuánto tarda en llegar mi pedido?',
-          a: 'Generalmente entre 7 y 20 días según el método de envío elegido. Trabajamos con InPost.',
+          a: 'Generalmente entre 7 y 20 días según el método de envío elegido. Trabajamos con InPost, por lo que recibirás tu pedido en un Punto Pack o Locker InPost cercano, junto con el número de seguimiento una vez enviado.',
         },
         {
           q: '¿Enviáis a toda España y Europa?',
@@ -62,7 +62,7 @@ export default function FAQ() {
       preguntas: [
         {
           q: '¿Cuánto cuesta el envío?',
-          a: 'El coste de envío depende del país de destino y se calcula automáticamente al introducir tu dirección en el pedido, antes de confirmar la compra. Todos los envíos se realizan a través de InPost.',
+          a: 'El coste de envío depende del país de destino y se calcula automáticamente al introducir tu dirección en el pedido, antes de confirmar la compra. Todos los envíos se realizan a través de InPost. Para pedidos a España a partir de 60€, el envío es totalmente gratuito.',
         },
       ],
     },
@@ -82,7 +82,8 @@ export default function FAQ() {
   ]
 
   const gastosEnvio = [
-    { pais: 'España', precio: '6€' },
+    { pais: 'España (pedidos inferiores a 60€)', precio: '6€' },
+    { pais: 'España (pedidos a partir de 60€)', precio: 'Gratis' },
     { pais: 'Portugal', precio: '8€' },
     { pais: 'Francia, Holanda, Bélgica y Luxemburgo', precio: '11€' },
     { pais: 'Italia', precio: '14€' },
@@ -129,7 +130,7 @@ export default function FAQ() {
                     borderBottom: fi < gastosEnvio.length - 1 ? '1px solid #f0f0f0' : 'none',
                   }}>
                     <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#333' }}>{fila.pais}</span>
-                    <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '16px', color: '#111' }}>{fila.precio}</span>
+                    <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '16px', color: fila.precio === 'Gratis' ? '#1a9e4f' : '#111' }}>{fila.precio}</span>
                   </div>
                 ))}
               </div>
