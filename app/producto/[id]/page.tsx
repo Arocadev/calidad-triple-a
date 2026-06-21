@@ -102,7 +102,7 @@ export default function Producto() {
   if (!producto) return null
 
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
-    `👀 Mira este producto en Calidad Triple A:\n\n👕 ${producto.name} — ${producto.brand}\n💰 ${producto.price}€\n\n🔗 calidadtriplea.com/producto/${producto.slug.current}`
+    `Mira este producto en Calidad Triple A:\n\n ${producto.name} — ${producto.brand}\n ${producto.price}€\n\n🔗 calidad3a.com/producto/${producto.slug.current}`
   )}`
 
   const handleAnadir = () => {

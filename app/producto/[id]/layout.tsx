@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title: `${producto.name} — ${producto.brand}`,
       description: `${producto.description || ''} Solo ${producto.price}€.`,
-      url: `https://calidadtriplea.com/producto/${id}`,
+      url: `https://calidad3a.com/producto/${id}`,
       siteName: 'Calidad Triple A',
       locale: 'es_ES',
       type: 'website',

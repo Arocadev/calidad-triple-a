@@ -5,25 +5,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     {
-      url: 'https://calidadtriplea.com',
+      url: 'https://calidad3a.com',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
-      url: 'https://calidadtriplea.com/catalogo',
+      url: 'https://calidad3a.com/catalogo',
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     ...productos.map(id => ({
-      url: `https://calidadtriplea.com/producto/${id}`,
+      url: `https://calidad3a.com/producto/${id}`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     })),
     {
-      url: 'https://calidadtriplea.com/aviso-legal',
+      url: 'https://calidad3a.com/aviso-legal',
       lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
