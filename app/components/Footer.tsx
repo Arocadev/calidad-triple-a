@@ -9,9 +9,14 @@ export default function Footer() {
       gridTemplateColumns: '1fr auto 1fr',
       alignItems: 'center',
       borderTop: '1px solid #333',
+      gap: '12px',
     }}>
-      <div />
-      <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#777', letterSpacing: '1px', textAlign: 'center' }}>
+      <div className="footer-payment-logos" style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <img src="/paypal.png" alt="PayPal" style={{ height: '22px', width: 'auto' }} />
+        <img src="/bizum.png" alt="Bizum" style={{ height: '19px', width: 'auto' }} />
+        <img src="/inpost.png" alt="InPost" style={{ height: '22px', width: 'auto' }} />
+      </div>
+      <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#777', letterSpacing: '1px', textAlign: 'center', whiteSpace: 'nowrap' }}>
         © {new Date().getFullYear()} Calidad Triple A
       </span>
       <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-end' }}>

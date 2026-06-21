@@ -45,7 +45,7 @@ export default function FAQ() {
         },
         {
           q: '¿Cuánto tarda en llegar mi pedido?',
-          a: 'Generalmente entre 7 y 20 días según el método de envío elegido. Una vez enviado recibirás el número de seguimiento.',
+          a: 'Generalmente entre 7 y 20 días según el método de envío elegido. Trabajamos con InPost.',
         },
         {
           q: '¿Enviáis a toda España y Europa?',
@@ -62,7 +62,7 @@ export default function FAQ() {
       preguntas: [
         {
           q: '¿Cuánto cuesta el envío?',
-          a: 'El coste de envío depende del país de destino y se calcula automáticamente al introducir tu dirección en el pedido, antes de confirmar la compra.',
+          a: 'El coste de envío depende del país de destino y se calcula automáticamente al introducir tu dirección en el pedido, antes de confirmar la compra. Todos los envíos se realizan a través de InPost.',
         },
       ],
     },

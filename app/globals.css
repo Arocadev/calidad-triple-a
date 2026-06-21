@@ -218,3 +218,10 @@ main {
     transform: translateX(0);
   }
 }
+
+@media (max-width: 768px) {
+  .footer-payment-logos {
+    justify-content: center !important;
+    order: 1;
+  }
+}
