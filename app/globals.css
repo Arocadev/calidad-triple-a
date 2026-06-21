@@ -105,6 +105,25 @@ main {
   animation: pageIn 0.3s ease forwards;
 }
 
+.trust-bar {
+  background: var(--amarillo);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.trust-bar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 16px;
+  border-right: 2px solid var(--negro);
+}
+
+.trust-bar-item:last-child {
+  border-right: none;
+}
+
 @media (max-width: 768px) {
   .navbar-menu-btn {
     display: block !important;
@@ -135,9 +154,15 @@ main {
     max-width: 100% !important;
   }
   .trust-bar {
-    gap: 12px;
-    flex-direction: column;
-    padding: 16px !important;
+    grid-template-columns: 1fr !important;
+  }
+  .trust-bar-item {
+    border-right: none !important;
+    border-bottom: 2px solid var(--negro);
+    padding: 14px 16px !important;
+  }
+  .trust-bar-item:last-child {
+    border-bottom: none;
   }
   .hero-logo {
     max-width: 240px !important;

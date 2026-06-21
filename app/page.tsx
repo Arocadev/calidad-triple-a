@@ -79,24 +79,13 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="trust-bar" style={{
-        background: 'var(--amarillo)',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-      }}>
+      <div className="trust-bar">
         {[
           { text: 'Calidad AAA', icon: <IconRosette size={18} stroke={1.8} color="#111" /> },
           { text: 'Envío rápido', icon: <IconTruckDelivery size={18} stroke={1.8} color="#111" /> },
           { text: 'Pedido por WhatsApp', icon: <IconBrandWhatsapp size={18} stroke={1.8} color="#111" /> },
         ].map((item, i) => (
-          <div key={i} style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '7px',
-            padding: '12px 16px',
-            borderRight: i < 2 ? '2px solid var(--negro)' : 'none',
-          }}>
+          <div key={i} className="trust-bar-item">
             {item.icon}
             <span style={{
               fontFamily: 'Barlow Condensed, sans-serif',
@@ -105,7 +94,6 @@ export default function Home() {
               letterSpacing: '1px',
               textTransform: 'uppercase',
               color: 'var(--negro)',
-              whiteSpace: 'nowrap',
             }}>{item.text}</span>
           </div>
         ))}
