@@ -8,7 +8,7 @@ const WHATSAPP = '34632117194'
 const EMAIL = 'calidadtriplea.info@gmail.com'
 
 export async function POST(req: NextRequest) {
-  const { nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal, notas, items, total } = await req.json()
+  const { nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal, notas, items, subtotal, gastoEnvio, total, pdfBase64 } = await req.json()
 
   const lineasProductos = items.map((item: {
     name: string
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     quantity: number
     price: number
   }) =>
-    `• ${item.name} (${item.brand}) — Talla ${item.size} x${item.quantity} — ${(item.price * item.quantity).toFixed(0)}€`
+    `• ${item.name} (${item.brand}) — Talla ${item.size} x${item.quantity} — ${(item.price * item.quantity).toFixed(2)}€`
   ).join('\n')
 
   const resumenTexto = `
@@ -35,7 +35,9 @@ ${notas ? `\n📝 Notas: ${notas}` : ''}
 📦 Productos:
 ${lineasProductos}
 
-💰 TOTAL: ${total.toFixed(0)}€
+Subtotal: ${subtotal.toFixed(2)}€
+Gastos de envío: ${gastoEnvio.toFixed(2)}€
+💰 TOTAL: ${total.toFixed(2)}€
   `.trim()
 
   const whatsappUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(resumenTexto)}`
@@ -53,11 +55,20 @@ ${lineasProductos}
     console.error('Error generando QR:', e)
   }
 
+  const attachments = []
+  if (pdfBase64) {
+    attachments.push({
+      filename: `pedido-${nombre.replace(/\s+/g, '-')}.pdf`,
+      content: pdfBase64.split(',')[1] || pdfBase64,
+    })
+  }
+
   try {
     await resend.emails.send({
       from: 'pedidos@calidadtriplea.es',
       to: EMAIL,
-      subject: `Nuevo pedido de ${nombre} — ${total.toFixed(0)}€`,
+      subject: `Nuevo pedido de ${nombre} — ${total.toFixed(2)}€`,
+      attachments: attachments.length > 0 ? attachments : undefined,
       html: `
         <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
           <div style="background: #111; padding: 20px; text-align: center;">
@@ -79,12 +90,20 @@ ${lineasProductos}
             }) => `
               <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5;">
                 <span>${item.name} (${item.brand}) — Talla ${item.size} x${item.quantity}</span>
-                <strong>${(item.price * item.quantity).toFixed(0)}€</strong>
+                <strong>${(item.price * item.quantity).toFixed(2)}€</strong>
               </div>
             `).join('')}
-            <div style="display: flex; justify-content: space-between; padding: 16px 0; margin-top: 8px;">
+            <div style="display: flex; justify-content: space-between; padding: 8px 0 0;">
+              <span style="color: #666;">Subtotal</span>
+              <span style="color: #666;">${subtotal.toFixed(2)}€</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 4px 0;">
+              <span style="color: #666;">Gastos de envío (${pais})</span>
+              <span style="color: #666;">${gastoEnvio.toFixed(2)}€</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 16px 0; margin-top: 8px; border-top: 1px solid #e5e5e5;">
               <strong style="font-size: 18px;">Total</strong>
-              <strong style="font-size: 24px;">${total.toFixed(0)}€</strong>
+              <strong style="font-size: 24px;">${total.toFixed(2)}€</strong>
             </div>
           </div>
           ${qrBase64 ? `

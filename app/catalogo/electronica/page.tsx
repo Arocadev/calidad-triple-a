@@ -8,7 +8,7 @@ import { useCartStore } from '@/store/cartStore'
 import Toast from '@/app/components/Toast'
 import SkeletonCard from '@/app/components/SkeletonCard'
 
-const SUBCATEGORIAS = ['Todo', 'Cargadores', 'Auriculares', 'Altavoces', 'Relojes inteligentes', 'Fundas']
+const SUBCATEGORIAS = ['Todo', 'Altavoz', 'Auriculares inalámbricos', 'Reloj inteligente', 'Bases de carga', 'Fundas de móvil']
 
 interface SanityProduct {
   _id: string
@@ -24,11 +24,11 @@ interface SanityProduct {
 }
 
 const subCatLabel: Record<string, string> = {
-  cargadores: 'Cargadores',
-  auriculares: 'Auriculares',
-  altavoces: 'Altavoces',
-  relojes: 'Relojes inteligentes',
-  fundas: 'Fundas',
+  altavoz: 'Altavoz',
+  auriculares: 'Auriculares inalámbricos',
+  reloj_inteligente: 'Reloj inteligente',
+  bases_carga: 'Bases de carga',
+  fundas_movil: 'Fundas de móvil',
 }
 
 type Seccion = 'orden' | 'precio' | 'categoria' | 'genero' | 'marca' | 'talla' | null

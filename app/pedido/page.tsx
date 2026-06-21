@@ -5,7 +5,21 @@ import { useCartStore } from '@/store/cartStore'
 import { useRouter } from 'next/navigation'
 import jsPDF from 'jspdf'
 
-const PAISES = ['España', 'Francia', 'Portugal', 'Italia', 'Alemania', 'Otros']
+const PAISES = ['España', 'Francia', 'Portugal', 'Italia', 'Alemania', 'Holanda', 'Bélgica', 'Luxemburgo', 'Polonia', 'Austria', 'Otros']
+
+const GASTOS_ENVIO: Record<string, number> = {
+  'España': 6,
+  'Francia': 11,
+  'Holanda': 11,
+  'Bélgica': 11,
+  'Luxemburgo': 11,
+  'Portugal': 8,
+  'Polonia': 15,
+  'Italia': 14,
+  'Alemania': 15,
+  'Austria': 15,
+  'Otros': 15,
+}
 
 export default function Pedido() {
   const { items, clearCart } = useCartStore()
@@ -22,7 +36,9 @@ export default function Pedido() {
   const [enviado, setEnviado] = useState(false)
   const [popup, setPopup] = useState(false)
 
-  const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  const gastoEnvio = pais ? (GASTOS_ENVIO[pais] ?? GASTOS_ENVIO['Otros']) : 0
+  const total = subtotal + gastoEnvio
   const camposObligatorios = nombre && telefono && pais && provincia && ciudad && direccion && codigoPostal
 
   useEffect(() => {
@@ -134,16 +150,25 @@ export default function Pedido() {
       doc.text(`${item.name} (${item.brand})`, 20, y)
       doc.text(item.size, 120, y)
       doc.text(`x${item.quantity}`, 150, y)
-      doc.text(`${(item.price * item.quantity).toFixed(0)}€`, 175, y)
+      doc.text(`${(item.price * item.quantity).toFixed(2)}€`, 175, y)
       y += 10
     })
     doc.line(20, y + 2, 190, y + 2)
     y += 12
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(11)
+    doc.setTextColor(80, 80, 80)
+    doc.text('Subtotal', 20, y)
+    doc.text(`${subtotal.toFixed(2)}€`, 190, y, { align: 'right' })
+    y += 8
+    doc.text('Gastos de envío', 20, y)
+    doc.text(`${gastoEnvio.toFixed(2)}€`, 190, y, { align: 'right' })
+    y += 10
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(14)
     doc.setTextColor(17, 17, 17)
     doc.text('TOTAL', 20, y)
-    doc.text(`${total.toFixed(0)}€`, 190, y, { align: 'right' })
+    doc.text(`${total.toFixed(2)}€`, 190, y, { align: 'right' })
     doc.setTextColor(150, 150, 150)
     doc.setFontSize(9)
     doc.setFont('helvetica', 'normal')
@@ -167,7 +192,7 @@ export default function Pedido() {
       const res = await fetch('/api/pedido', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal, notas, items, total, pdfBase64 }),
+        body: JSON.stringify({ nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal, notas, items, subtotal, gastoEnvio, total, pdfBase64 }),
       })
       if (res.ok) {
         const data = await res.json()
@@ -249,12 +274,20 @@ export default function Pedido() {
               {items.map(item => (
                 <div key={`${item.id}-${item.size}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: '1px solid #f5f5f5' }}>
                   <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#111' }}>{item.name} · Talla {item.size} · x{item.quantity}</span>
-                  <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '14px', color: '#111' }}>{(item.price * item.quantity).toFixed(0)}€</span>
+                  <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '14px', color: '#111' }}>{(item.price * item.quantity).toFixed(2)}€</span>
                 </div>
               ))}
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0 0' }}>
+                <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#999' }}>Subtotal</span>
+                <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#666' }}>{subtotal.toFixed(2)}€</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
+                <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#999' }}>Gastos de envío</span>
+                <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#666' }}>{gastoEnvio.toFixed(2)}€</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
                 <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '14px', color: '#999', textTransform: 'uppercase', letterSpacing: '1px' }}>Total</span>
-                <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '22px', color: '#111' }}>{total.toFixed(0)}€</span>
+                <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '22px', color: '#111' }}>{total.toFixed(2)}€</span>
               </div>
             </div>
 
@@ -321,12 +354,22 @@ export default function Pedido() {
           {items.map(item => (
             <div key={`${item.id}-${item.size}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f5f5f5' }}>
               <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '15px', color: '#111' }}>{item.name} · Talla {item.size} · x{item.quantity}</span>
-              <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '15px', color: '#111' }}>{(item.price * item.quantity).toFixed(0)}€</span>
+              <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '15px', color: '#111' }}>{(item.price * item.quantity).toFixed(2)}€</span>
             </div>
           ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0 0' }}>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#999' }}>Subtotal</span>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#666' }}>{subtotal.toFixed(2)}€</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#999' }}>
+              Gastos de envío {!pais && <span style={{ color: '#bbb' }}>(selecciona país)</span>}
+            </span>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#666' }}>{pais ? `${gastoEnvio.toFixed(2)}€` : '—'}</span>
+          </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
             <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '16px', color: '#999', textTransform: 'uppercase', letterSpacing: '2px' }}>Total</span>
-            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '28px', color: '#111' }}>{total.toFixed(0)}€</span>
+            <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '28px', color: '#111' }}>{total.toFixed(2)}€</span>
           </div>
         </div>
 
@@ -350,6 +393,11 @@ export default function Pedido() {
               <option value="">Selecciona un país</option>
               {PAISES.map(p => <option key={p} value={p}>{p}</option>)}
             </select>
+            {pais && (
+              <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '12px', color: '#999', marginTop: '6px' }}>
+                Gastos de envío a {pais}: <strong style={{ color: '#111' }}>{gastoEnvio.toFixed(2)}€</strong>
+              </p>
+            )}
           </div>
           <div className="pedido-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
             <div>
@@ -402,7 +450,7 @@ export default function Pedido() {
         </button>
 
         <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '12px', color: '#999', textAlign: 'center', marginTop: '12px' }}>
-          * Campos obligatorios. El pago se gestiona por Bizum o PayPal.
+          * Campos obligatorios. El pago se gestiona por Bizum o PayPal. Los gastos de envío se calculan según el país de destino.
         </p>
       </div>
     </div>

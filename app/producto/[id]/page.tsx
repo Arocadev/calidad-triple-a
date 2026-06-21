@@ -23,9 +23,33 @@ interface SanityProduct {
 }
 
 const subCatLabel: Record<string, string> = {
-  zapatillas: 'Zapatillas y chanclas', camisetas: 'Camisetas', conjuntos: 'Conjuntos', pantalones: 'Pantalones', ropa_interior: 'Ropa interior',
-  gafas: 'Gafas de sol', gorras: 'Gorras', bandoleras: 'Bandoleras', carteras: 'Carteras y tarjeteros',
-  cargadores: 'Cargadores', auriculares: 'Auriculares', altavoces: 'Altavoces', relojes: 'Relojes inteligentes', fundas: 'Fundas',
+  camisetas: 'Camisetas',
+  pantalones_chandal_cortos: 'Pantalones chándal cortos',
+  pantalones_chandal_largos: 'Pantalones chándal largos',
+  vaqueros_cortos: 'Vaqueros cortos',
+  vaqueros_largos: 'Vaqueros largos',
+  calzoncillos: 'Calzoncillos',
+  calcetines: 'Calcetines',
+  conjuntos_deporte: 'Conjuntos deporte',
+  conjuntos_chandal: 'Conjuntos chándal',
+  camisetas_futbol: 'Camisetas de fútbol',
+  chaquetas: 'Chaquetas',
+  sudaderas: 'Sudaderas',
+  zapatillas: 'Zapatillas',
+  sandalias_chanclas: 'Sandalias y chanclas',
+  carteras: 'Carteras',
+  tarjeteros: 'Tarjeteros',
+  gafas: 'Gafas de sol',
+  gorras: 'Gorras',
+  bolsos: 'Bolsos',
+  bandoleras_rinoneras: 'Bandoleras y riñoneras',
+  cinturones: 'Cinturones',
+  relojes_joyeria: 'Relojes y joyería',
+  altavoz: 'Altavoz',
+  auriculares: 'Auriculares inalámbricos',
+  reloj_inteligente: 'Reloj inteligente',
+  bases_carga: 'Bases de carga',
+  fundas_movil: 'Fundas de móvil',
 }
 
 export default function Producto() {

@@ -58,6 +58,15 @@ export default function FAQ() {
       ],
     },
     {
+      categoria: 'Envíos y gastos',
+      preguntas: [
+        {
+          q: '¿Cuánto cuesta el envío?',
+          a: 'El coste de envío depende del país de destino y se calcula automáticamente al introducir tu dirección en el pedido, antes de confirmar la compra.',
+        },
+      ],
+    },
+    {
       categoria: 'Pagos',
       preguntas: [
         {
@@ -70,6 +79,15 @@ export default function FAQ() {
         },
       ],
     },
+  ]
+
+  const gastosEnvio = [
+    { pais: 'España', precio: '6€' },
+    { pais: 'Portugal', precio: '8€' },
+    { pais: 'Francia, Holanda, Bélgica y Luxemburgo', precio: '11€' },
+    { pais: 'Italia', precio: '14€' },
+    { pais: 'Polonia, Alemania y Austria', precio: '15€' },
+    { pais: 'Resto de Europa', precio: '15€' },
   ]
 
   return (
@@ -99,6 +117,23 @@ export default function FAQ() {
                 </div>
               ))}
             </div>
+
+            {bloque.categoria === 'Envíos y gastos' && (
+              <div style={{ background: '#fff', border: '1px solid #e5e5e5', borderRadius: '6px', overflow: 'hidden', marginTop: '12px' }}>
+                {gastosEnvio.map((fila, fi) => (
+                  <div key={fi} style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '12px 20px',
+                    borderBottom: fi < gastosEnvio.length - 1 ? '1px solid #f0f0f0' : 'none',
+                  }}>
+                    <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#333' }}>{fila.pais}</span>
+                    <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '16px', color: '#111' }}>{fila.precio}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
 

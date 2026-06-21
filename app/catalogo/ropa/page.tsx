@@ -8,7 +8,7 @@ import { useCartStore } from '@/store/cartStore'
 import Toast from '@/app/components/Toast'
 import SkeletonCard from '@/app/components/SkeletonCard'
 
-const SUBCATEGORIAS = ['Todo', 'Zapatillas y chanclas', 'Camisetas', 'Conjuntos', 'Pantalones', 'Ropa interior']
+const SUBCATEGORIAS = ['Todo', 'Camisetas', 'Pantalones chándal cortos', 'Pantalones chándal largos', 'Vaqueros cortos', 'Vaqueros largos', 'Calzoncillos', 'Calcetines', 'Conjuntos deporte', 'Conjuntos chándal', 'Camisetas de fútbol', 'Chaquetas', 'Sudaderas', 'Zapatillas', 'Sandalias y chanclas']
 
 interface SanityProduct {
   _id: string
@@ -24,11 +24,20 @@ interface SanityProduct {
 }
 
 const subCatLabel: Record<string, string> = {
-  zapatillas: 'Zapatillas y chanclas',
   camisetas: 'Camisetas',
-  conjuntos: 'Conjuntos',
-  pantalones: 'Pantalones',
-  ropa_interior: 'Ropa interior',
+  pantalones_chandal_cortos: 'Pantalones chándal cortos',
+  pantalones_chandal_largos: 'Pantalones chándal largos',
+  vaqueros_cortos: 'Vaqueros cortos',
+  vaqueros_largos: 'Vaqueros largos',
+  calzoncillos: 'Calzoncillos',
+  calcetines: 'Calcetines',
+  conjuntos_deporte: 'Conjuntos deporte',
+  conjuntos_chandal: 'Conjuntos chándal',
+  camisetas_futbol: 'Camisetas de fútbol',
+  chaquetas: 'Chaquetas',
+  sudaderas: 'Sudaderas',
+  zapatillas: 'Zapatillas',
+  sandalias_chanclas: 'Sandalias y chanclas',
 }
 
 type Seccion = 'orden' | 'precio' | 'categoria' | 'genero' | 'marca' | 'talla' | null

@@ -8,7 +8,7 @@ import { useCartStore } from '@/store/cartStore'
 import Toast from '@/app/components/Toast'
 import SkeletonCard from '@/app/components/SkeletonCard'
 
-const SUBCATEGORIAS = ['Todo', 'Gafas de sol', 'Gorras', 'Bandoleras', 'Carteras y tarjeteros']
+const SUBCATEGORIAS = ['Todo', 'Carteras', 'Tarjeteros', 'Gafas de sol', 'Gorras', 'Bolsos', 'Bandoleras y riñoneras', 'Cinturones', 'Relojes y joyería']
 
 interface SanityProduct {
   _id: string
@@ -24,10 +24,14 @@ interface SanityProduct {
 }
 
 const subCatLabel: Record<string, string> = {
+  carteras: 'Carteras',
+  tarjeteros: 'Tarjeteros',
   gafas: 'Gafas de sol',
   gorras: 'Gorras',
-  bandoleras: 'Bandoleras',
-  carteras: 'Carteras y tarjeteros',
+  bolsos: 'Bolsos',
+  bandoleras_rinoneras: 'Bandoleras y riñoneras',
+  cinturones: 'Cinturones',
+  relojes_joyeria: 'Relojes y joyería',
 }
 
 type Seccion = 'orden' | 'precio' | 'categoria' | 'genero' | 'marca' | 'talla' | null

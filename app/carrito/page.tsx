@@ -200,7 +200,7 @@ export default function Carrito() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '20px',
+            marginBottom: '4px',
           }}>
             <span style={{
               fontFamily: 'Barlow Condensed, sans-serif',
@@ -209,7 +209,7 @@ export default function Carrito() {
               color: '#999',
               textTransform: 'uppercase',
               letterSpacing: '2px',
-            }}>Total</span>
+            }}>Subtotal</span>
             <span style={{
               fontFamily: 'Barlow Condensed, sans-serif',
               fontWeight: 900,
@@ -217,6 +217,15 @@ export default function Carrito() {
               color: '#111',
             }}>{total.toFixed(0)}€</span>
           </div>
+
+          <p style={{
+            fontFamily: 'Barlow Condensed, sans-serif',
+            fontSize: '13px',
+            color: '#999',
+            margin: '0 0 20px',
+          }}>
+            Los gastos de envío se calculan en el siguiente paso según el país de destino.
+          </p>
 
           <button
             onClick={() => router.push('/pedido')}
