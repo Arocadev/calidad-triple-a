@@ -22,16 +22,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Calidad Triple A',
     description: 'Ropa, complementos y electrónica al mejor precio.',
-    url: 'https://calidadtriplea.com',
+    url: 'https://calidad3a.com',
     siteName: 'Calidad Triple A',
     locale: 'es_ES',
     type: 'website',
     images: [
       {
-        url: 'https://calidadtriplea.com/og-image.jpg',
+        url: 'https://calidad3a.com/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Calidad Triple A — Moda y complementos al mejor precio',
+        alt: 'Calidad Triple A — Moda urbana, calidad AAA, envíos a toda Europa',
       },
     ],
   },
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Calidad Triple A',
     description: 'Ropa, complementos y electrónica al mejor precio.',
-    images: ['https://calidadtriplea.com/og-image.jpg'],
+    images: ['https://calidad3a.com/og-image.jpg'],
   },
   robots: {
     index: true,
