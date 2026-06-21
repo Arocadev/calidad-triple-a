@@ -17,7 +17,6 @@
 html {
   overflow-x: hidden;
   width: 100%;
-  min-height: 100%;
 }
 
 body {
@@ -26,9 +25,6 @@ body {
   color: var(--negro);
   overflow-x: hidden;
   width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 a {
@@ -43,10 +39,6 @@ button {
 
 main {
   background: var(--negro);
-}
-
-footer {
-  margin-top: auto;
 }
 
 @keyframes shimmer {
