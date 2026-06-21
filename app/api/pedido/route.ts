@@ -64,8 +64,8 @@ Gastos de envío: ${gastoEnvio.toFixed(2)}€
   }
 
   try {
-    await resend.emails.send({
-      from: 'pedidos@calidadtriplea.es',
+    const { data, error } = await resend.emails.send({
+      from: 'pedidos@calidad3a.com',
       to: EMAIL,
       subject: `Nuevo pedido de ${nombre} — ${total.toFixed(2)}€`,
       attachments: attachments.length > 0 ? attachments : undefined,
@@ -126,8 +126,14 @@ Gastos de envío: ${gastoEnvio.toFixed(2)}€
         </div>
       `,
     })
+
+    if (error) {
+      console.error('Resend devolvió un error:', JSON.stringify(error))
+    } else {
+      console.log('Email enviado correctamente:', JSON.stringify(data))
+    }
   } catch (e) {
-    console.error('Error enviando email:', e)
+    console.error('Excepción al enviar email:', e)
   }
 
   return NextResponse.json({ ok: true, whatsappUrl })
