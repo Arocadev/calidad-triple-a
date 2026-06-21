@@ -43,13 +43,12 @@ Gastos de envío: ${gastoEnvio.toFixed(2)}€
 
   const whatsappUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(resumenTexto)}`
 
-  const datosEnvioTexto = `${nombre}\n${telefono}\n${direccion}\n${codigoPostal} ${ciudad}\n${provincia}, ${pais}`
+  const datosEnvioTexto = `NOMBRE Y APELLIDOS: ${nombre}\nTELÉFONO: ${telefono}\nDIRECCIÓN: ${direccion}\nCÓDIGO POSTAL: ${codigoPostal}\nCIUDAD: ${ciudad}\nPROVINCIA: ${provincia}\nPAÍS: ${pais}`
 
   // QR como imagen PNG independiente (adjunto)
   let qrAttachmentBase64 = ''
-  let qrBase64 = ''
   try {
-    qrBase64 = await QRCode.toDataURL(datosEnvioTexto, {
+    const qrBase64 = await QRCode.toDataURL(datosEnvioTexto, {
       width: 600,
       margin: 2,
       color: { dark: '#111111', light: '#FFFFFF' },
@@ -71,21 +70,28 @@ Gastos de envío: ${gastoEnvio.toFixed(2)}€
     doc.text('DATOS DE ENVÍO', 105, 19, { align: 'center' })
 
     doc.setTextColor(17, 17, 17)
-    doc.setFontSize(22)
-    doc.setFont('helvetica', 'bold')
-    doc.text(nombre, 20, 55)
+    let y = 50
 
-    doc.setFontSize(16)
-    doc.setFont('helvetica', 'normal')
-    doc.text(telefono, 20, 68)
+    const campo = (etiqueta: string, valor: string, tamFuente = 16) => {
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(11)
+      doc.setTextColor(150, 150, 150)
+      doc.text(etiqueta, 20, y)
+      y += 7
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(tamFuente)
+      doc.setTextColor(17, 17, 17)
+      doc.text(valor, 20, y)
+      y += 14
+    }
 
-    doc.setDrawColor(229, 229, 229)
-    doc.line(20, 78, 190, 78)
-
-    doc.setFontSize(16)
-    doc.text(direccion, 20, 92)
-    doc.text(`${codigoPostal} ${ciudad}`, 20, 102)
-    doc.text(`${provincia}, ${pais}`, 20, 112)
+    campo('NOMBRE Y APELLIDOS', nombre, 18)
+    campo('TELÉFONO', telefono, 16)
+    campo('DIRECCIÓN', direccion, 16)
+    campo('CÓDIGO POSTAL', codigoPostal, 16)
+    campo('CIUDAD', ciudad, 16)
+    campo('PROVINCIA', provincia, 16)
+    campo('PAÍS', pais, 16)
 
     datosEnvioPdfBase64 = doc.output('datauristring').split(',')[1]
   } catch (e) {
