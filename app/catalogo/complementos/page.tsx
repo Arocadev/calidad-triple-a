@@ -320,7 +320,7 @@ export default function CatalogoComplementos() {
           : filtrados.length === 0
             ? <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '48px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '16px', color: '#999', textTransform: 'uppercase', letterSpacing: '2px' }}>No se encontraron productos</div>
             : filtrados.map(p => (
-              <div key={p._id} style={{ background: '#fff', border: '1px solid #e5e5e5', borderRadius: '6px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
+              <div key={p._id} style={{ background: '#fff', border: '1px solid #e5e5e5', borderRadius: '6px', overflow: 'hidden', cursor: 'pointer', position: 'relative', display: 'flex', flexDirection: 'column' }}
                 onMouseEnter={e => (e.currentTarget.style.borderColor = '#FFD600')}
                 onMouseLeave={e => (e.currentTarget.style.borderColor = '#e5e5e5')}
               >
@@ -336,13 +336,13 @@ export default function CatalogoComplementos() {
                     )}
                   </div>
                 </Link>
-                <div style={{ padding: '10px' }}>
+                <div style={{ padding: '10px', display: 'flex', flexDirection: 'column', flex: 1 }}>
                   <Link href={`/producto/${p.slug.current}`} style={{ textDecoration: 'none' }}>
                     <div style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', color: '#999', textTransform: 'uppercase', marginBottom: '2px' }}>{p.brand}</div>
                     <div style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '15px', color: '#111', marginBottom: '8px' }}>{p.name}</div>
                   </Link>
                   {tallasAbiertas === p._id ? (
-                    <div>
+                    <div style={{ marginTop: 'auto' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
                         <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', color: '#999', textTransform: 'uppercase', margin: 0 }}>Talla</p>
                         <button onClick={() => setTallasAbiertas(null)} style={{ background: 'none', border: 'none', color: '#bbb', fontSize: '14px', cursor: 'pointer', padding: 0 }}>✕</button>
@@ -354,7 +354,7 @@ export default function CatalogoComplementos() {
                       </div>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
                       <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '18px', color: '#111' }}>{p.price}€</span>
                       <button onClick={() => setTallasAbiertas(p._id)} style={{ background: '#111', color: '#FFD600', border: 'none', borderRadius: '3px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '11px', letterSpacing: '1px', padding: '5px 10px', cursor: 'pointer', textTransform: 'uppercase' }}>+ Añadir</button>
                     </div>

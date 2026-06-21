@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { IconShirt, IconSunglasses, IconRosette, IconTruckDelivery, IconBrandWhatsapp } from '@tabler/icons-react'
+import { IconShirt, IconSunglasses, IconHeadphones, IconRosette, IconTruckDelivery, IconBrandWhatsapp } from '@tabler/icons-react'
 
 export default function Home() {
   return (
@@ -50,28 +50,30 @@ export default function Home() {
             borderTop: '2px solid #444',
           }}>
             {[
-              { label: 'Ropa', href: '/catalogo/ropa', icon: <IconShirt size={28} stroke={1.5} color="#FFD600" /> },
-              { label: 'Complementos', href: '/catalogo/complementos', icon: <IconSunglasses size={28} stroke={1.5} color="#FFD600" /> },
+              { label: 'Ropa', href: '/catalogo/ropa', icon: <IconShirt size={26} stroke={1.5} color="#FFD600" /> },
+              { label: 'Complementos', href: '/catalogo/complementos', icon: <IconSunglasses size={26} stroke={1.5} color="#FFD600" /> },
+              { label: 'Electrónica', href: '/catalogo/electronica', icon: <IconHeadphones size={26} stroke={1.5} color="#FFD600" /> },
             ].map((cat, i) => (
               <Link href={cat.href} key={i} style={{
                 flex: 1,
-                padding: '20px 12px',
+                padding: '20px 8px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
-                borderRight: i === 0 ? '2px solid #444' : 'none',
+                borderRight: i < 2 ? '2px solid #444' : 'none',
                 textDecoration: 'none',
               }}>
                 {cat.icon}
                 <span style={{
                   fontFamily: 'Barlow Condensed, sans-serif',
                   fontWeight: 700,
-                  fontSize: '13px',
-                  letterSpacing: '2px',
+                  fontSize: '12px',
+                  letterSpacing: '1px',
                   textTransform: 'uppercase',
                   color: 'var(--amarillo)',
+                  textAlign: 'center',
                 }}>{cat.label}</span>
               </Link>
             ))}
