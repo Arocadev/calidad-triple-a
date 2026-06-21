@@ -45,11 +45,11 @@ Gastos de envío: ${gastoEnvio.toFixed(2)}€
 
   const datosEnvioTexto = `NOMBRE Y APELLIDOS: ${nombre}\nTELÉFONO: ${telefono}\nDIRECCIÓN: ${direccion}\nCÓDIGO POSTAL: ${codigoPostal}\nCIUDAD: ${ciudad}\nPROVINCIA: ${provincia}\nPAÍS: ${pais}`
 
-  // QR como imagen PNG independiente (adjunto), tamaño reducido para impresión
+  // QR suelto como PNG, 200px
   let qrAttachmentBase64 = ''
   try {
     const qrBase64 = await QRCode.toDataURL(datosEnvioTexto, {
-      width: 300,
+      width: 200,
       margin: 2,
       color: { dark: '#111111', light: '#FFFFFF' },
     })
@@ -58,46 +58,45 @@ Gastos de envío: ${gastoEnvio.toFixed(2)}€
     console.error('Error generando QR:', e)
   }
 
-  // PDF de datos de envío en formato etiqueta estándar de paquetería (100x150mm)
+  // PDF horizontal pequeño con los datos de envío, sin franja negra
   let datosEnvioPdfBase64 = ''
   try {
     const doc = new jsPDF({
-      orientation: 'portrait',
+      orientation: 'landscape',
       unit: 'mm',
-      format: [100, 150],
+      format: [150, 100],
     })
 
-    doc.setFillColor(17, 17, 17)
-    doc.rect(0, 0, 100, 16, 'F')
-    doc.setTextColor(255, 214, 0)
-    doc.setFontSize(11)
-    doc.setFont('helvetica', 'bold')
-    doc.text('DATOS DE ENVÍO', 50, 10.5, { align: 'center' })
-
     doc.setTextColor(17, 17, 17)
-    let y = 26
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('DETALLES DE ENVÍO', 75, 12, { align: 'center' })
+    doc.setDrawColor(220, 220, 220)
+    doc.line(8, 16, 142, 16)
 
-    const campo = (etiqueta: string, valor: string, tamFuente = 10) => {
+    const campo = (x: number, y: number, etiqueta: string, valor: string, tamFuente = 10) => {
       doc.setFont('helvetica', 'bold')
-      doc.setFontSize(7)
+      doc.setFontSize(6.5)
       doc.setTextColor(140, 140, 140)
-      doc.text(etiqueta, 8, y)
-      y += 4.5
+      doc.text(etiqueta, x, y)
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(tamFuente)
       doc.setTextColor(17, 17, 17)
-      const lineas = doc.splitTextToSize(valor, 84)
-      doc.text(lineas, 8, y)
-      y += 5.5 * lineas.length + 3.5
+      const lineas = doc.splitTextToSize(valor, 62)
+      doc.text(lineas, x, y + 5)
+      return y + 5 + 4.2 * lineas.length + 4
     }
 
-    campo('NOMBRE Y APELLIDOS', nombre, 11)
-    campo('TELÉFONO', telefono, 10)
-    campo('DIRECCIÓN', direccion, 10)
-    campo('CÓDIGO POSTAL', codigoPostal, 10)
-    campo('CIUDAD', ciudad, 10)
-    campo('PROVINCIA', provincia, 10)
-    campo('PAÍS', pais, 10)
+    let yIzq = 26
+    yIzq = campo(8, yIzq, 'NOMBRE Y APELLIDOS', nombre, 11)
+    yIzq = campo(8, yIzq, 'TELÉFONO', telefono, 10)
+    yIzq = campo(8, yIzq, 'DIRECCIÓN', direccion, 10)
+
+    let yDer = 26
+    yDer = campo(78, yDer, 'CÓDIGO POSTAL', codigoPostal, 10)
+    yDer = campo(78, yDer, 'CIUDAD', ciudad, 10)
+    yDer = campo(78, yDer, 'PROVINCIA', provincia, 10)
+    yDer = campo(78, yDer, 'PAÍS', pais, 10)
 
     datosEnvioPdfBase64 = doc.output('datauristring').split(',')[1]
   } catch (e) {
