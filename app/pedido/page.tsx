@@ -202,13 +202,18 @@ export default function Pedido() {
     }))
   }
 
+  const esIOS = () => {
+    if (typeof navigator === 'undefined') return false
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  }
+
   const handlePedido = async () => {
     setPopup(false)
     setEnviando(true)
 
-    // Abrir la pestaña de WhatsApp inmediatamente (síncrono, antes de cualquier await)
-    // para evitar el bloqueo de pop-ups de Safari en iOS
-    const whatsappWindow = window.open('', '_blank')
+    const iOS = esIOS()
+    const whatsappWindow = iOS ? window.open('', '_blank') : null
 
     try {
       const doc = await generarPDF()
@@ -226,8 +231,12 @@ export default function Pedido() {
         guardarDatosCliente()
         setEnviado(true)
         clearCart()
-        if (whatsappWindow) {
-          whatsappWindow.location.href = data.whatsappUrl
+        if (iOS) {
+          if (whatsappWindow) {
+            whatsappWindow.location.href = data.whatsappUrl
+          } else {
+            window.open(data.whatsappUrl, '_blank')
+          }
         } else {
           window.open(data.whatsappUrl, '_blank')
         }
