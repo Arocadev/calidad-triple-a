@@ -13,15 +13,15 @@ export default function QuienesSomos() {
         <div style={{ background: '#fff', border: '1px solid #e5e5e5', borderRadius: '6px', padding: '40px' }}>
 
           <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '17px', color: '#333', lineHeight: 1.8, marginBottom: '20px' }}>
-            Calidad Triple A nace con una idea sencilla: ofrecer réplicas de la más alta calidad del mercado a un precio justo, sin intermediarios ni sobrecostes innecesarios.
+            Somos una empresa comprometida con la excelencia, especializada en la selección y comercialización de productos de alta calidad a precios competitivos.
           </p>
 
           <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '17px', color: '#333', lineHeight: 1.8, marginBottom: '20px' }}>
-            Trabajamos directamente con proveedores de confianza para traerte ropa, complementos y electrónica de calidad AAA — la más alta dentro del mundo de las réplicas, con acabados, materiales y detalles que se acercan al máximo al producto original.
+            Colaboramos directamente con fabricantes especializados para ofrecer artículos cuidadosamente seleccionados, con acabados superiores y una excelente relación calidad-precio.
           </p>
 
           <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '17px', color: '#333', lineHeight: 1.8, marginBottom: '20px' }}>
-            Nuestro proceso es cercano y sin complicaciones: eliges tus productos, confirmas el pedido y gestionamos contigo cada paso directamente por WhatsApp. Sin letra pequeña, sin esperas eternas para resolver dudas.
+            Con más de 10 años de experiencia en el sector, nuestra misión es proporcionar a nuestros clientes productos que superen sus expectativas, respaldados por un servicio profesional, cercano y orientado a la satisfacción del cliente.
           </p>
 
           <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '17px', color: '#333', lineHeight: 1.8, marginBottom: '0' }}>
