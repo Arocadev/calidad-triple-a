@@ -22,7 +22,7 @@ html {
 
 body {
   font-family: 'Barlow', sans-serif;
-  background: var(--gris-bg);
+  background: var(--negro);
   color: var(--negro);
   overflow-x: hidden;
   width: 100%;
@@ -43,7 +43,10 @@ button {
 
 main {
   background: var(--negro);
-  flex: 1;
+}
+
+footer {
+  margin-top: auto;
 }
 
 @keyframes shimmer {
