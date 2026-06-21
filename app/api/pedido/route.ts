@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import QRCode from 'qrcode'
+import { jsPDF } from 'jspdf'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -44,15 +45,51 @@ Gastos de envío: ${gastoEnvio.toFixed(2)}€
 
   const datosEnvioTexto = `${nombre}\n${telefono}\n${direccion}\n${codigoPostal} ${ciudad}\n${provincia}, ${pais}`
 
+  // QR como imagen PNG independiente (adjunto)
+  let qrAttachmentBase64 = ''
   let qrBase64 = ''
   try {
     qrBase64 = await QRCode.toDataURL(datosEnvioTexto, {
-      width: 280,
-      margin: 1,
+      width: 600,
+      margin: 2,
       color: { dark: '#111111', light: '#FFFFFF' },
     })
+    qrAttachmentBase64 = qrBase64.split(',')[1]
   } catch (e) {
     console.error('Error generando QR:', e)
+  }
+
+  // PDF simple de datos de envío, solo lo justo para la caja
+  let datosEnvioPdfBase64 = ''
+  try {
+    const doc = new jsPDF()
+    doc.setFillColor(17, 17, 17)
+    doc.rect(0, 0, 210, 30, 'F')
+    doc.setTextColor(255, 214, 0)
+    doc.setFontSize(18)
+    doc.setFont('helvetica', 'bold')
+    doc.text('DATOS DE ENVÍO', 105, 19, { align: 'center' })
+
+    doc.setTextColor(17, 17, 17)
+    doc.setFontSize(22)
+    doc.setFont('helvetica', 'bold')
+    doc.text(nombre, 20, 55)
+
+    doc.setFontSize(16)
+    doc.setFont('helvetica', 'normal')
+    doc.text(telefono, 20, 68)
+
+    doc.setDrawColor(229, 229, 229)
+    doc.line(20, 78, 190, 78)
+
+    doc.setFontSize(16)
+    doc.text(direccion, 20, 92)
+    doc.text(`${codigoPostal} ${ciudad}`, 20, 102)
+    doc.text(`${provincia}, ${pais}`, 20, 112)
+
+    datosEnvioPdfBase64 = doc.output('datauristring').split(',')[1]
+  } catch (e) {
+    console.error('Error generando PDF de datos de envío:', e)
   }
 
   const attachments = []
@@ -60,6 +97,18 @@ Gastos de envío: ${gastoEnvio.toFixed(2)}€
     attachments.push({
       filename: `pedido-${nombre.replace(/\s+/g, '-')}.pdf`,
       content: pdfBase64.split(',')[1] || pdfBase64,
+    })
+  }
+  if (datosEnvioPdfBase64) {
+    attachments.push({
+      filename: `envio-${nombre.replace(/\s+/g, '-')}.pdf`,
+      content: datosEnvioPdfBase64,
+    })
+  }
+  if (qrAttachmentBase64) {
+    attachments.push({
+      filename: `qr-envio-${nombre.replace(/\s+/g, '-')}.png`,
+      content: qrAttachmentBase64,
     })
   }
 
@@ -88,38 +137,29 @@ Gastos de envío: ${gastoEnvio.toFixed(2)}€
               quantity: number
               price: number
             }) => `
-              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5;">
-                <span>${item.name} (${item.brand}) — Talla ${item.size} x${item.quantity}</span>
-                <strong>${(item.price * item.quantity).toFixed(2)}€</strong>
-              </div>
+              <table width="100%" style="border-bottom: 1px solid #f5f5f5;"><tr>
+                <td style="padding: 8px 0; text-align: left;">${item.name} (${item.brand}) — Talla ${item.size} x${item.quantity}</td>
+                <td style="padding: 8px 0; text-align: right; white-space: nowrap;"><strong>${(item.price * item.quantity).toFixed(2)}€</strong></td>
+              </tr></table>
             `).join('')}
-            <div style="display: flex; justify-content: space-between; padding: 8px 0 0;">
-              <span style="color: #666;">Subtotal</span>
-              <span style="color: #666;">${subtotal.toFixed(2)}€</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; padding: 4px 0;">
-              <span style="color: #666;">Gastos de envío (${pais})</span>
-              <span style="color: #666;">${gastoEnvio.toFixed(2)}€</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; padding: 16px 0; margin-top: 8px; border-top: 1px solid #e5e5e5;">
-              <strong style="font-size: 18px;">Total</strong>
-              <strong style="font-size: 24px;">${total.toFixed(2)}€</strong>
-            </div>
+            <table width="100%" style="margin-top: 8px;">
+              <tr>
+                <td style="padding: 4px 0; color: #666; text-align: left;">Subtotal</td>
+                <td style="padding: 4px 0; color: #666; text-align: right;">${subtotal.toFixed(2)}€</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 0; color: #666; text-align: left;">Gastos de envío (${pais})</td>
+                <td style="padding: 4px 0; color: #666; text-align: right;">${gastoEnvio.toFixed(2)}€</td>
+              </tr>
+              <tr>
+                <td style="padding: 16px 0 0; border-top: 1px solid #e5e5e5; text-align: left;"><strong style="font-size: 18px;">Total</strong></td>
+                <td style="padding: 16px 0 0; border-top: 1px solid #e5e5e5; text-align: right;"><strong style="font-size: 24px;">${total.toFixed(2)}€</strong></td>
+              </tr>
+            </table>
           </div>
-          ${qrBase64 ? `
-          <div style="padding: 24px; border: 1px solid #e5e5e5; border-top: none; text-align: center;">
-            <p style="margin: 0 0 4px; font-size: 13px; font-weight: bold; color: #666; text-transform: uppercase; letter-spacing: 1px;">QR para el envío</p>
-            <p style="margin: 0 0 16px; font-size: 12px; color: #999;">Escanea para ver los datos de envío al empaquetar</p>
-            <img src="${qrBase64}" alt="QR datos de envío" width="180" height="180" style="display: block; margin: 0 auto;" />
-            <div style="margin-top: 16px; padding: 12px; background: #f9f9f9; border-radius: 4px; text-align: left; font-size: 13px; color: #333; line-height: 1.6;">
-              <strong>${nombre}</strong><br/>
-              ${telefono}<br/>
-              ${direccion}<br/>
-              ${codigoPostal} ${ciudad}<br/>
-              ${provincia}, ${pais}
-            </div>
+          <div style="padding: 20px 24px; border: 1px solid #e5e5e5; border-top: none; text-align: center; background: #f9f9f9;">
+            <p style="margin: 0; font-size: 13px; color: #666;">📎 Adjuntos: PDF del pedido, PDF de datos de envío para la caja, y código QR.</p>
           </div>
-          ` : ''}
           <div style="background: #FFD600; padding: 12px; text-align: center;">
             <p style="margin: 0; font-weight: bold; color: #111;">Contacta al cliente por Bizum o PayPal</p>
           </div>
