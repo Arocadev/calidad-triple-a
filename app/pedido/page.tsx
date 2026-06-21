@@ -29,7 +29,10 @@ export default function Pedido() {
   const [pais, setPais] = useState('')
   const [provincia, setProvincia] = useState('')
   const [ciudad, setCiudad] = useState('')
-  const [direccion, setDireccion] = useState('')
+  const [calle, setCalle] = useState('')
+  const [numero, setNumero] = useState('')
+  const [piso, setPiso] = useState('')
+  const [puerta, setPuerta] = useState('')
   const [codigoPostal, setCodigoPostal] = useState('')
   const [notas, setNotas] = useState('')
   const [enviando, setEnviando] = useState(false)
@@ -39,7 +42,17 @@ export default function Pedido() {
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
   const gastoEnvio = pais ? (GASTOS_ENVIO[pais] ?? GASTOS_ENVIO['Otros']) : 0
   const total = subtotal + gastoEnvio
-  const camposObligatorios = nombre && telefono && pais && provincia && ciudad && direccion && codigoPostal
+  const camposObligatorios = nombre && telefono && pais && provincia && ciudad && calle && numero && codigoPostal
+
+  const direccionCompleta = () => {
+    let dir = `${calle}, ${numero}`
+    if (piso || puerta) {
+      const pisoTexto = piso ? `${piso}º` : ''
+      const puertaTexto = puerta ? `${puerta}ª` : ''
+      dir += `, ${[pisoTexto, puertaTexto].filter(Boolean).join(' ')}`
+    }
+    return dir
+  }
 
   useEffect(() => {
     if (items.length === 0 && !enviado) {
@@ -57,7 +70,10 @@ export default function Pedido() {
         setPais(d.pais || '')
         setProvincia(d.provincia || '')
         setCiudad(d.ciudad || '')
-        setDireccion(d.direccion || '')
+        setCalle(d.calle || '')
+        setNumero(d.numero || '')
+        setPiso(d.piso || '')
+        setPuerta(d.puerta || '')
         setCodigoPostal(d.codigoPostal || '')
       } catch (e) {
         console.error('Error leyendo datos guardados', e)
@@ -131,7 +147,7 @@ export default function Pedido() {
     doc.setTextColor(80, 80, 80)
     doc.text(`Cliente: ${nombre}`, 20, 66)
     doc.text(`Teléfono: ${telefono}`, 20, 74)
-    doc.text(`Dirección: ${direccion}, ${codigoPostal} ${ciudad}, ${provincia}, ${pais}`, 20, 82)
+    doc.text(`Dirección: ${direccionCompleta()}, ${codigoPostal} ${ciudad}, ${provincia}, ${pais}`, 20, 82)
     doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, 20, 90)
     if (notas) doc.text(`Notas: ${notas}`, 20, 98)
     doc.setDrawColor(229, 229, 229)
@@ -178,7 +194,7 @@ export default function Pedido() {
 
   const guardarDatosCliente = () => {
     localStorage.setItem('datosCliente', JSON.stringify({
-      nombre, telefono, pais, provincia, ciudad, direccion, codigoPostal,
+      nombre, telefono, pais, provincia, ciudad, calle, numero, piso, puerta, codigoPostal,
     }))
   }
 
@@ -188,6 +204,7 @@ export default function Pedido() {
     try {
       const doc = await generarPDF()
       const pdfBase64 = doc.output('datauristring')
+      const direccion = direccionCompleta()
 
       const res = await fetch('/api/pedido', {
         method: 'POST',
@@ -295,7 +312,7 @@ export default function Pedido() {
               <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#999', marginBottom: '6px' }}>Envío a</p>
               <p style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', color: '#111', margin: 0 }}>
                 {nombre}<br />
-                {direccion}, {codigoPostal} {ciudad}<br />
+                {direccionCompleta()}, {codigoPostal} {ciudad}<br />
                 {provincia}, {pais}
               </p>
             </div>
@@ -409,9 +426,25 @@ export default function Pedido() {
               <input type="text" value={ciudad} onChange={e => setCiudad(e.target.value)} placeholder="Ciudad" style={inputStyle} />
             </div>
           </div>
-          <div style={fieldStyle}>
-            <label style={labelStyle}>Dirección *</label>
-            <input type="text" value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Calle y número" style={inputStyle} />
+          <div className="pedido-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div>
+              <label style={labelStyle}>Calle *</label>
+              <input type="text" value={calle} onChange={e => setCalle(e.target.value)} placeholder="Nombre de la calle" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Número *</label>
+              <input type="text" value={numero} onChange={e => setNumero(e.target.value)} placeholder="Ej: 1, 12-B" style={inputStyle} />
+            </div>
+          </div>
+          <div className="pedido-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div>
+              <label style={labelStyle}>Piso</label>
+              <input type="text" value={piso} onChange={e => setPiso(e.target.value)} placeholder="Ej: 2 (opcional)" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Puerta</label>
+              <input type="text" value={puerta} onChange={e => setPuerta(e.target.value)} placeholder="Ej: 8 (opcional)" style={inputStyle} />
+            </div>
           </div>
           <div style={fieldStyle}>
             <label style={labelStyle}>Código postal *</label>
