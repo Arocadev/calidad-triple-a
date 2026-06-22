@@ -165,12 +165,30 @@ main {
 }
 
 .catalogo-card-img {
-  height: 200px;
+  height: 220px;
+}
+
+@media (max-width: 1400px) {
+  .catalogo-card-img {
+    height: 180px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .catalogo-card-img {
+    height: 160px;
+  }
+}
+
+@media (max-width: 900px) {
+  .catalogo-card-img {
+    height: 140px;
+  }
 }
 
 @media (max-width: 768px) {
   .catalogo-card-img {
-    height: 140px !important;
+    height: 120px !important;
   }
 }
 

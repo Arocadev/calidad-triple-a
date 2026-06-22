@@ -8,7 +8,7 @@ export default function Home() {
         background: 'var(--negro)',
         padding: '24px',
         textAlign: 'center',
-        minHeight: 'calc(100vh - 180px)',
+        minHeight: 'calc(100vh - 120px)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
