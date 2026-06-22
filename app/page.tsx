@@ -19,7 +19,7 @@ export default function Home() {
           alt="Calidad Triple A — Moda Urbana & Streetwear"
           className="hero-logo"
           style={{
-            maxWidth: 'clamp(200px, 30vw, 480px)',
+            maxWidth: 'clamp(200px, 25vw, 400px)',
             width: '100%',
             height: 'auto',
             margin: '0 auto',
