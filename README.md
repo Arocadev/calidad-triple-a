@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Calidad Triple A — Tienda Online
 
-## Getting Started
+E-commerce completo para tienda de moda urbana y streetwear, desarrollado como proyecto freelance.
 
-First, run the development server:
+🔗 **[Ver en producción](https://calidad3a.com)**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Stack tecnológico
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Frontend**: Next.js 15 (App Router), React, TypeScript, Zustand
+- **CMS**: Sanity (gestión de productos, imágenes y contenido)
+- **Emails**: Resend (emails transaccionales automáticos)
+- **Deploy**: Vercel
+- **Dominio y DNS**: Namecheap
+- **Estilos**: CSS puro con variables y media queries
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Funcionalidades
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Catálogo dinámico con tres categorías (Ropa, Complementos, Electrónica) conectado a Sanity CMS
+- Filtros por subcategoría, marca, talla, género y precio
+- Ficha de producto con carrusel de imágenes y productos relacionados
+- Carrito de compra con persistencia mediante Zustand
+- Checkout con cálculo automático de gastos de envío por país y envío gratis a partir de 60€ en España
+- Confirmación de pedido por WhatsApp con mensaje preformateado
+- Email automático al vendedor con tres adjuntos: PDF del pedido, PDF de datos de envío y código QR
+- Generación de PDF del pedido descargable para el cliente (jsPDF)
+- SEO básico: sitemap dinámico, metadatos Open Graph, Google Search Console
+- Diseño responsive adaptado a móvil, tablet y escritorio
+- Vercel Web Analytics integrado
 
-## Learn More
+## Estructura del proyecto
+app/
+├── catalogo/          # Catálogo por categoría con filtros
+├── producto/[id]/     # Ficha de producto dinámica
+├── carrito/           # Carrito de compra
+├── pedido/            # Checkout y confirmación
+├── api/pedido/        # API route: email + PDF + QR
+├── quienes-somos/
+├── faq/
+└── aviso-legal/
+sanity/                # Esquemas y cliente de Sanity
+store/                 # Zustand (estado del carrito)
 
-To learn more about Next.js, take a look at the following resources:
+## Aspectos destacados
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Arquitectura JAMstack con CMS headless: el cliente gestiona el catálogo de forma autónoma desde Sanity Studio sin tocar código
+- Flujo de pedido completo sin pasarela de pago: WhatsApp + Bizum/PayPal gestionado manualmente, adaptado al modelo de negocio del cliente
+- Generación de documentos en servidor (jsPDF + QRCode) adjuntados automáticamente al email de cada pedido
+- Configuración completa de DNS, dominio, verificación de dominio en Resend y Google Search Console
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Flujo de desarrollo
 
-## Deploy on Vercel
+El proyecto se inició en el repositorio personal [`AleeexRC/calidad-triple-a`](https://github.com/AleeexRC/calidad-triple-a), donde se desarrolló la arquitectura base y las funcionalidades principales.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Una vez listo para producción, el repositorio se migró a la cuenta del cliente (`JosepBola/calidad-triple-a`) para conectarlo con su cuenta de Vercel y realizar el despliegue real. Durante la fase de pruebas en producción — comprobando el comportamiento en móvil, distintos tamaños de pantalla y el flujo completo de pedido — los ajustes finales se hicieron directamente desde el repositorio del cliente.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El repositorio personal se mantiene sincronizado como copia de referencia para el portfolio.
