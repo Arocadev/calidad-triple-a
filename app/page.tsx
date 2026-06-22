@@ -8,7 +8,7 @@ export default function Home() {
         background: 'var(--negro)',
         padding: '24px',
         textAlign: 'center',
-        minHeight: 'calc(100vh - 280px)',
+        minHeight: 'calc(100vh - 180px)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -19,7 +19,7 @@ export default function Home() {
           alt="Calidad Triple A — Moda Urbana & Streetwear"
           className="hero-logo"
           style={{
-            maxWidth: 'min(420px, 35vw)',
+            maxWidth: 'min(500px, 40vw)',
             width: '100%',
             height: 'auto',
             margin: '0 auto',
@@ -50,18 +50,18 @@ export default function Home() {
           <div className="hero-cats" style={{
             display: 'flex',
             width: '100%',
-            maxWidth: 'min(700px, 60vw)',
+            maxWidth: 'min(800px, 65vw)',
             margin: '0 auto',
             borderTop: '2px solid #444',
           }}>
             {[
-              { label: 'Ropa', href: '/catalogo/ropa', icon: <IconShirt size={32} stroke={1.5} color="#FFD600" /> },
-              { label: 'Complementos', href: '/catalogo/complementos', icon: <IconSunglasses size={32} stroke={1.5} color="#FFD600" /> },
-              { label: 'Electrónica', href: '/catalogo/electronica', icon: <IconHeadphones size={32} stroke={1.5} color="#FFD600" /> },
+              { label: 'Ropa', href: '/catalogo/ropa', icon: <IconShirt size={36} stroke={1.5} color="#FFD600" /> },
+              { label: 'Complementos', href: '/catalogo/complementos', icon: <IconSunglasses size={36} stroke={1.5} color="#FFD600" /> },
+              { label: 'Electrónica', href: '/catalogo/electronica', icon: <IconHeadphones size={36} stroke={1.5} color="#FFD600" /> },
             ].map((cat, i) => (
               <Link href={cat.href} key={i} style={{
                 flex: 1,
-                padding: '24px 8px',
+                padding: '28px 8px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -74,7 +74,7 @@ export default function Home() {
                 <span style={{
                   fontFamily: 'Barlow Condensed, sans-serif',
                   fontWeight: 700,
-                  fontSize: 'clamp(12px, 1.2vw, 16px)',
+                  fontSize: 'clamp(13px, 1.3vw, 18px)',
                   letterSpacing: '1px',
                   textTransform: 'uppercase',
                   color: 'var(--amarillo)',

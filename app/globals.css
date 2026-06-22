@@ -120,6 +120,60 @@ main {
   border-right: none;
 }
 
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.catalogo-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  padding: 20px 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1400px) {
+  .catalogo-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .catalogo-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .catalogo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .catalogo-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 14px !important;
+  }
+}
+
+.catalogo-card-img {
+  height: 200px;
+}
+
+@media (max-width: 768px) {
+  .catalogo-card-img {
+    height: 140px !important;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar-menu-btn {
     display: block !important;
@@ -130,6 +184,9 @@ main {
   .navbar-cart-text {
     display: none;
   }
+}
+
+@media (max-width: 768px) {
   .footer-grid {
     grid-template-columns: 1fr !important;
     gap: 10px;
@@ -177,11 +234,6 @@ main {
     flex: 1;
     width: auto !important;
   }
-  .catalogo-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
-    padding: 14px !important;
-  }
 }
 
 @media (max-width: 768px) {
@@ -210,34 +262,9 @@ main {
   }
 }
 
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
 @media (max-width: 768px) {
   .footer-payment-logos {
     justify-content: center !important;
     order: 1;
-  }
-}
-
-.catalogo-grid {
-  grid-template-columns: repeat(6, 1fr) !important;
-}
-
-@media (max-width: 1200px) {
-  .catalogo-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .catalogo-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
   }
 }

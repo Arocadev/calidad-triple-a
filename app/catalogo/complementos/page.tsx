@@ -69,12 +69,8 @@ export default function CatalogoComplementos() {
   const marcas = Array.from(new Set(productos.map(p => p.brand))).sort()
   const tallasDisponibles = Array.from(new Set(productos.flatMap(p => p.sizes?.map(s => s.size) || []))).sort()
 
-  const toggleMarca = (m: string) => {
-    setMarcasSel(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m])
-  }
-  const toggleTalla = (t: string) => {
-    setTallasSel(prev => prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t])
-  }
+  const toggleMarca = (m: string) => setMarcasSel(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m])
+  const toggleTalla = (t: string) => setTallasSel(prev => prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t])
 
   const filtrados = productos
     .filter(p => {
@@ -114,9 +110,7 @@ export default function CatalogoComplementos() {
     setSeccionAbierta(null)
   }
 
-  const toggleSeccion = (s: Seccion) => {
-    setSeccionAbierta(prev => prev === s ? null : s)
-  }
+  const toggleSeccion = (s: Seccion) => setSeccionAbierta(prev => prev === s ? null : s)
 
   const pillStyle = (activo: boolean) => ({
     background: activo ? '#111' : '#fff',
@@ -189,91 +183,41 @@ export default function CatalogoComplementos() {
       </div>
 
       {filtroAbierto && (
-        <div onClick={cerrarFiltro} style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.5)',
-          zIndex: 300,
-        }}>
-          <div onClick={e => e.stopPropagation()} style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            bottom: 0,
-            width: '100%',
-            maxWidth: '380px',
-            background: '#fff',
-            display: 'flex',
-            flexDirection: 'column',
-            animation: 'slideInLeft 0.25s ease',
-          }}>
+        <div onClick={cerrarFiltro} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 300 }}>
+          <div onClick={e => e.stopPropagation()} style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '100%', maxWidth: '380px', background: '#fff', display: 'flex', flexDirection: 'column', animation: 'slideInLeft 0.25s ease' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 20px', borderBottom: '1px solid #eee' }}>
               <h2 style={{ fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '20px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>Filtros</h2>
               <button onClick={cerrarFiltro} style={{ background: 'none', border: 'none', fontSize: '22px', color: '#999', cursor: 'pointer', padding: '4px', lineHeight: 1 }}>✕</button>
             </div>
-
             <div style={{ flex: 1, overflowY: 'auto', padding: '0 20px' }}>
-
-              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('orden')}>
-                Ordenar por
-                {renderFlecha('orden')}
-              </button>
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('orden')}>Ordenar por{renderFlecha('orden')}</button>
               {seccionAbierta === 'orden' && (
                 <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   <button onClick={() => setOrden(orden === 'precio-asc' ? '' : 'precio-asc')} style={pillStyle(orden === 'precio-asc')}>Precio ascendente</button>
                   <button onClick={() => setOrden(orden === 'precio-desc' ? '' : 'precio-desc')} style={pillStyle(orden === 'precio-desc')}>Precio descendente</button>
                 </div>
               )}
-
-              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('precio')}>
-                Precio
-                {renderFlecha('precio')}
-              </button>
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('precio')}>Precio{renderFlecha('precio')}</button>
               {seccionAbierta === 'precio' && (
                 <div style={{ padding: '14px 0', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <input
-                    type="number"
-                    value={precioMin}
-                    onChange={e => setPrecioMin(Number(e.target.value))}
-                    placeholder="0"
-                    style={{ width: '70px', padding: '8px', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', outline: 'none', textAlign: 'center' as const, boxSizing: 'border-box' as const }}
-                  />
+                  <input type="number" value={precioMin} onChange={e => setPrecioMin(Number(e.target.value))} placeholder="0" style={{ width: '70px', padding: '8px', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', outline: 'none', textAlign: 'center' as const, boxSizing: 'border-box' as const }} />
                   <span style={{ color: '#bbb' }}>—</span>
-                  <input
-                    type="number"
-                    value={precioMax}
-                    onChange={e => setPrecioMax(Number(e.target.value))}
-                    placeholder="500"
-                    style={{ width: '70px', padding: '8px', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', outline: 'none', textAlign: 'center' as const, boxSizing: 'border-box' as const }}
-                  />
+                  <input type="number" value={precioMax} onChange={e => setPrecioMax(Number(e.target.value))} placeholder="500" style={{ width: '70px', padding: '8px', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontSize: '14px', outline: 'none', textAlign: 'center' as const, boxSizing: 'border-box' as const }} />
                   <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#999' }}>€</span>
                 </div>
               )}
-
-              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('categoria')}>
-                Categoría
-                {renderFlecha('categoria')}
-              </button>
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('categoria')}>Categoría{renderFlecha('categoria')}</button>
               {seccionAbierta === 'categoria' && (
                 <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {SUBCATEGORIAS.map(c => (
-                    <button key={c} onClick={() => setSubcategoria(c)} style={pillStyle(subcategoria === c)}>{c}</button>
-                  ))}
+                  {SUBCATEGORIAS.map(c => <button key={c} onClick={() => setSubcategoria(c)} style={pillStyle(subcategoria === c)}>{c}</button>)}
                 </div>
               )}
-
-              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('genero')}>
-                Género
-                {renderFlecha('genero')}
-              </button>
+              <button style={seccionHeaderStyle} onClick={() => toggleSeccion('genero')}>Género{renderFlecha('genero')}</button>
               {seccionAbierta === 'genero' && (
                 <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {['Todo', 'Hombre', 'Mujer', 'Unisex'].map(g => (
-                    <button key={g} onClick={() => setGenero(g)} style={pillStyle(genero === g)}>{g}</button>
-                  ))}
+                  {['Todo', 'Hombre', 'Mujer', 'Unisex'].map(g => <button key={g} onClick={() => setGenero(g)} style={pillStyle(genero === g)}>{g}</button>)}
                 </div>
               )}
-
               <button style={seccionHeaderStyle} onClick={() => toggleSeccion('talla')}>
                 Talla
                 {tallasSel.length > 0 && <span style={{ fontSize: '12px', color: '#999', fontWeight: 400 }}>{tallasSel.length} seleccionadas</span>}
@@ -283,12 +227,9 @@ export default function CatalogoComplementos() {
                 <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {tallasDisponibles.length === 0
                     ? <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#999' }}>Sin tallas disponibles</span>
-                    : tallasDisponibles.map(t => (
-                      <button key={t} onClick={() => toggleTalla(t)} style={pillStyle(tallasSel.includes(t))}>{t}</button>
-                    ))}
+                    : tallasDisponibles.map(t => <button key={t} onClick={() => toggleTalla(t)} style={pillStyle(tallasSel.includes(t))}>{t}</button>)}
                 </div>
               )}
-
               <button style={seccionHeaderStyle} onClick={() => toggleSeccion('marca')}>
                 Marca
                 {marcasSel.length > 0 && <span style={{ fontSize: '12px', color: '#999', fontWeight: 400 }}>{marcasSel.length} seleccionadas</span>}
@@ -298,14 +239,10 @@ export default function CatalogoComplementos() {
                 <div style={{ padding: '14px 0', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {marcas.length === 0
                     ? <span style={{ fontFamily: 'Barlow Condensed, sans-serif', fontSize: '13px', color: '#999' }}>Sin marcas disponibles</span>
-                    : marcas.map(m => (
-                      <button key={m} onClick={() => toggleMarca(m)} style={pillStyle(marcasSel.includes(m))}>{m}</button>
-                    ))}
+                    : marcas.map(m => <button key={m} onClick={() => toggleMarca(m)} style={pillStyle(marcasSel.includes(m))}>{m}</button>)}
                 </div>
               )}
-
             </div>
-
             <div style={{ display: 'flex', gap: '10px', padding: '16px 20px', borderTop: '1px solid #eee' }}>
               <button onClick={limpiarFiltros} style={{ flex: 1, background: '#fff', border: '1px solid #e5e5e5', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 700, fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', color: '#999', cursor: 'pointer', padding: '12px' }}>Limpiar</button>
               <button onClick={cerrarFiltro} style={{ flex: 2, background: '#111', color: '#FFD600', border: 'none', borderRadius: '4px', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '14px', letterSpacing: '1px', textTransform: 'uppercase', cursor: 'pointer', padding: '12px' }}>Ver {filtrados.length} resultados</button>
@@ -313,8 +250,8 @@ export default function CatalogoComplementos() {
           </div>
         </div>
       )}
-      
-      <div className="catalogo-grid" style={{ gap: '16px', padding: '20px 40px', maxWidth: '1600px', margin: '0 auto', display: 'grid' }}>
+
+      <div className="catalogo-grid">
         {cargando
           ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
           : filtrados.length === 0
@@ -328,9 +265,9 @@ export default function CatalogoComplementos() {
                   <div style={{ position: 'absolute', top: '8px', left: '8px', background: p.badge === 'nuevo' ? '#FFD600' : '#111', color: p.badge === 'nuevo' ? '#111' : '#FFD600', fontFamily: 'Barlow Condensed, sans-serif', fontWeight: 900, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', padding: '2px 7px', borderRadius: '3px', zIndex: 1 }}>{p.badge}</div>
                 )}
                 <Link href={`/producto/${p.slug.current}`} style={{ textDecoration: 'none' }}>
-                  <div style={{ background: '#f5f5f5', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div className="catalogo-card-img" style={{ background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {p.images?.[0] ? (
-                      <img src={urlFor(p.images[0]).width(300).height(300).url()} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px' }} />
+                      <img src={urlFor(p.images[0]).width(400).height(400).url()} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '16px' }} />
                     ) : (
                       <span style={{ color: '#bbb', fontSize: '12px' }}>Sin imagen</span>
                     )}
