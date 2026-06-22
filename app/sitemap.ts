@@ -8,12 +8,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     `*[_type == "product"]{ "slug": slug.current, _updatedAt }`
   )
 
-  const productUrls = productos.map((p: { slug: string; _updatedAt: string }) => ({
-    url: `${BASE_URL}/producto/${p.slug}`,
-    lastModified: new Date(p._updatedAt),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }))
+  const productUrls = productos
+    .filter((p: { slug: string; _updatedAt: string }) => p.slug)
+    .map((p: { slug: string; _updatedAt: string }) => ({
+      url: `${BASE_URL}/producto/${p.slug}`,
+      lastModified: new Date(p._updatedAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }))
 
   return [
     { url: BASE_URL, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },

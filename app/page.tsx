@@ -43,7 +43,7 @@ export default function Home() {
           textTransform: 'uppercase',
           marginBottom: '8px',
         }}>
-          La misma calidad, diferente precio
+          La mejor calidad, al mejor precio
         </p>
 
         <div style={{ width: '100%' }}>
