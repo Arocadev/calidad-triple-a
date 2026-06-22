@@ -54,3 +54,10 @@ El proyecto se inició en el repositorio personal [`AleeexRC/calidad-triple-a`](
 Una vez listo para producción, el repositorio se migró a la cuenta del cliente (`JosepBola/calidad-triple-a`) para conectarlo con su cuenta de Vercel y realizar el despliegue real. Durante la fase de pruebas en producción — comprobando el comportamiento en móvil, distintos tamaños de pantalla y el flujo completo de pedido — los ajustes finales se hicieron directamente desde el repositorio del cliente.
 
 El repositorio personal se mantiene sincronizado como copia de referencia para el portfolio.
+
+---
+
+## Autor
+
+Desarrollado por **Alejandro Rodríguez**  
+GitHub: [@AleeexRC](https://github.com/AleeexRC)
