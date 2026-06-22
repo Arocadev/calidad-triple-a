@@ -19,7 +19,7 @@ export default function Home() {
           alt="Calidad Triple A — Moda Urbana & Streetwear"
           className="hero-logo"
           style={{
-            maxWidth: '340px',
+            maxWidth: 'min(600px, 50vw)',
             width: '100%',
             height: 'auto',
             margin: '0 auto',
@@ -37,7 +37,7 @@ export default function Home() {
 
         <p className="hero-sub" style={{
           fontFamily: 'Barlow Condensed, sans-serif',
-          fontSize: '16px',
+          fontSize: 'clamp(14px, 1.5vw, 22px)',
           color: '#777',
           letterSpacing: '4px',
           textTransform: 'uppercase',
@@ -50,23 +50,23 @@ export default function Home() {
           <div className="hero-cats" style={{
             display: 'flex',
             width: '100%',
-            maxWidth: '500px',
+            maxWidth: 'min(700px, 60vw)',
             margin: '0 auto',
             borderTop: '2px solid #444',
           }}>
             {[
-              { label: 'Ropa', href: '/catalogo/ropa', icon: <IconShirt size={26} stroke={1.5} color="#FFD600" /> },
-              { label: 'Complementos', href: '/catalogo/complementos', icon: <IconSunglasses size={26} stroke={1.5} color="#FFD600" /> },
-              { label: 'Electrónica', href: '/catalogo/electronica', icon: <IconHeadphones size={26} stroke={1.5} color="#FFD600" /> },
+              { label: 'Ropa', href: '/catalogo/ropa', icon: <IconShirt size={32} stroke={1.5} color="#FFD600" /> },
+              { label: 'Complementos', href: '/catalogo/complementos', icon: <IconSunglasses size={32} stroke={1.5} color="#FFD600" /> },
+              { label: 'Electrónica', href: '/catalogo/electronica', icon: <IconHeadphones size={32} stroke={1.5} color="#FFD600" /> },
             ].map((cat, i) => (
               <Link href={cat.href} key={i} style={{
                 flex: 1,
-                padding: '20px 8px',
+                padding: '24px 8px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '8px',
+                gap: '10px',
                 borderRight: i < 2 ? '2px solid #444' : 'none',
                 textDecoration: 'none',
               }}>
@@ -74,7 +74,7 @@ export default function Home() {
                 <span style={{
                   fontFamily: 'Barlow Condensed, sans-serif',
                   fontWeight: 700,
-                  fontSize: '12px',
+                  fontSize: 'clamp(12px, 1.2vw, 16px)',
                   letterSpacing: '1px',
                   textTransform: 'uppercase',
                   color: 'var(--amarillo)',

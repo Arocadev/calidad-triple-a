@@ -310,8 +310,8 @@ export default function CatalogoElectronica() {
           </div>
         </div>
       )}
-
-      <div className="catalogo-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px', padding: '20px 24px' }}>
+      
+      <div className="catalogo-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', padding: '20px 40px', maxWidth: '1600px', margin: '0 auto' }}>
         {cargando
           ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
           : filtrados.length === 0
