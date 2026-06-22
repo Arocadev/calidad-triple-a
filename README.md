@@ -60,4 +60,4 @@ El repositorio personal se mantiene sincronizado como copia de referencia para e
 ## Autor
 
 Desarrollado por **Alejandro Rodríguez**  
-GitHub: [@Arocadev](https://github.com/Arocadev)
+GitHub: [@ArocaDev](https://github.com/ArocaDev)
