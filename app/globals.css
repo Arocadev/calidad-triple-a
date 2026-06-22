@@ -225,3 +225,19 @@ main {
     order: 1;
   }
 }
+
+.catalogo-grid {
+  grid-template-columns: repeat(6, 1fr) !important;
+}
+
+@media (max-width: 1200px) {
+  .catalogo-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .catalogo-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}

@@ -319,8 +319,8 @@ export default function CatalogoRopa() {
           </div>
         </div>
       )}
-      
-      <div className="catalogo-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', padding: '20px 40px', maxWidth: '1600px', margin: '0 auto' }}>
+
+      <div className="catalogo-grid" style={{ gap: '16px', padding: '20px 40px', maxWidth: '1600px', margin: '0 auto', display: 'grid' }}>
         {cargando
           ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
           : filtrados.length === 0
