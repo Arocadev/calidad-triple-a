@@ -182,9 +182,9 @@ main { animation: pageIn 0.3s ease forwards; }
   .catalogo-search { flex: 1; width: auto !important; }
 
   .catalogo-hub-grid {
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 1fr !important;
     padding: 16px !important;
-    gap: 12px !important;
+    gap: 10px !important;
   }
 
   .cart-item { justify-content: flex-start !important; }
@@ -197,4 +197,9 @@ main { animation: pageIn 0.3s ease forwards; }
   }
 
   .pedido-row { grid-template-columns: 1fr !important; }
+}
+
+@media (min-width: 1400px) {
+  .hero-logo { max-width: 520px !important; }
+  .hero-cats { max-width: 750px !important; }
 }
