@@ -4,6 +4,8 @@ E-commerce completo para tienda de moda urbana y streetwear, desarrollado como p
 
 🔗 **[Ver en producción](https://calidad3a.com)**
 
+---
+
 ## Stack tecnológico
 
 - **Frontend**: Next.js 15 (App Router), React, TypeScript, Zustand
@@ -12,6 +14,8 @@ E-commerce completo para tienda de moda urbana y streetwear, desarrollado como p
 - **Deploy**: Vercel
 - **Dominio y DNS**: Namecheap
 - **Estilos**: CSS puro con variables y media queries
+
+---
 
 ## Funcionalidades
 
@@ -27,7 +31,11 @@ E-commerce completo para tienda de moda urbana y streetwear, desarrollado como p
 - Diseño responsive adaptado a móvil, tablet y escritorio
 - Vercel Web Analytics integrado
 
+---
+
 ## Estructura del proyecto
+
+```
 app/
 ├── catalogo/          # Catálogo por categoría con filtros
 ├── producto/[id]/     # Ficha de producto dinámica
@@ -39,6 +47,9 @@ app/
 └── aviso-legal/
 sanity/                # Esquemas y cliente de Sanity
 store/                 # Zustand (estado del carrito)
+```
+
+---
 
 ## Aspectos destacados
 
@@ -47,9 +58,11 @@ store/                 # Zustand (estado del carrito)
 - Generación de documentos en servidor (jsPDF + QRCode) adjuntados automáticamente al email de cada pedido
 - Configuración completa de DNS, dominio, verificación de dominio en Resend y Google Search Console
 
+---
+
 ## Flujo de desarrollo
 
-El proyecto se inició en el repositorio personal [`AleeexRC/calidad-triple-a`](https://github.com/AleeexRC/calidad-triple-a), donde se desarrolló la arquitectura base y las funcionalidades principales.
+El proyecto se inició en el repositorio personal `ArocaDev/calidad-triple-a`, donde se desarrolló la arquitectura base y las funcionalidades principales.
 
 Una vez listo para producción, el repositorio se migró a la cuenta del cliente (`JosepBola/calidad-triple-a`) para conectarlo con su cuenta de Vercel y realizar el despliegue real. Durante la fase de pruebas en producción — comprobando el comportamiento en móvil, distintos tamaños de pantalla y el flujo completo de pedido — los ajustes finales se hicieron directamente desde el repositorio del cliente.
 
