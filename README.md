@@ -1,68 +1,115 @@
 # Calidad Triple A — Tienda Online
 
-E-commerce completo para tienda de moda urbana y streetwear, desarrollado como proyecto freelance.
+E-commerce completo de moda urbana y streetwear desarrollado como proyecto freelance, con catálogo dinámico, gestión de pedidos automatizada y una arquitectura basada en CMS headless.
 
-🔗 **[Ver en producción](https://calidad3a.com)**
+🔗 **Ver en producción:** *(añadir enlace)*
 
 ---
 
 ## Stack tecnológico
 
-- **Frontend**: Next.js 15 (App Router), React, TypeScript, Zustand
-- **CMS**: Sanity (gestión de productos, imágenes y contenido)
-- **Emails**: Resend (emails transaccionales automáticos)
-- **Deploy**: Vercel
-- **Dominio y DNS**: Namecheap
-- **Estilos**: CSS puro con variables y media queries
+### Frontend
+
+* Next.js 15 (App Router)
+* React
+* TypeScript
+* Zustand (gestión del estado global del carrito)
+
+### CMS
+
+* Sanity (gestión de productos, imágenes y contenido)
+
+### Servicios externos
+
+* Resend (emails transaccionales)
+* Vercel (despliegue y hosting)
+* Namecheap (dominio y configuración DNS)
+
+### Estilos
+
+* CSS puro con variables CSS y media queries para diseño responsive
 
 ---
 
-## Funcionalidades
+## ✨ Funcionalidades
 
-- Catálogo dinámico con tres categorías (Ropa, Complementos, Electrónica) conectado a Sanity CMS
-- Filtros por subcategoría, marca, talla, género y precio
-- Ficha de producto con carrusel de imágenes y productos relacionados
-- Carrito de compra con persistencia mediante Zustand
-- Checkout con cálculo automático de gastos de envío por país y envío gratis a partir de 60€ en España
-- Confirmación de pedido por WhatsApp con mensaje preformateado
-- Email automático al vendedor con tres adjuntos: PDF del pedido, PDF de datos de envío y código QR
-- Generación de PDF del pedido descargable para el cliente (jsPDF)
-- SEO básico: sitemap dinámico, metadatos Open Graph, Google Search Console
-- Diseño responsive adaptado a móvil, tablet y escritorio
-- Vercel Web Analytics integrado
+### Catálogo de productos
+
+* Catálogo dinámico conectado a Sanity CMS.
+* Tres categorías principales:
+
+  * Ropa
+  * Complementos
+  * Electrónica
+* Sistema de filtros por subcategoría, marca, talla, género y precio.
+* Página de producto con galería de imágenes y productos relacionados.
+
+### Carrito y checkout
+
+* Carrito persistente utilizando Zustand.
+* Cálculo automático de gastos de envío según el país.
+* Envío gratuito a partir de 60€ en España.
+* Confirmación del pedido mediante WhatsApp con mensaje preformateado.
+
+### Gestión automatizada de pedidos
+
+* Envío automático de un email al vendedor con:
+
+  * PDF con el resumen del pedido.
+  * PDF con los datos de envío.
+  * Código QR generado automáticamente.
+* Generación y descarga del PDF del pedido para el cliente mediante jsPDF.
+
+### SEO y analítica
+
+* Sitemap dinámico.
+* Metadatos Open Graph.
+* Integración con Google Search Console.
+* Vercel Web Analytics.
+
+### Experiencia de usuario
+
+* Diseño completamente responsive adaptado a móvil, tablet y escritorio.
 
 ---
 
 ## Estructura del proyecto
 
+```bash
 app/
-├── catalogo/          # Catálogo por categoría con filtros
-├── producto/[id]/     # Ficha de producto dinámica
-├── carrito/           # Carrito de compra
+├── catalogo/          # Catálogo con filtros
+├── producto/[id]/     # Página de producto dinámica
+├── carrito/           # Gestión del carrito
 ├── pedido/            # Checkout y confirmación
-├── api/pedido/        # API route: email + PDF + QR
+├── api/pedido/        # API Route: emails, PDF y QR
 ├── quienes-somos/
 ├── faq/
 └── aviso-legal/
-sanity/                # Esquemas y cliente de Sanity
-store/                 # Zustand (estado del carrito)
 
----
+sanity/
+├── schemas/           # Esquemas de contenido
+└── lib/               # Cliente y configuración de Sanity
 
-## Aspectos destacados
+store/
+└── cartStore.ts       # Estado global con Zustand
+```
 
-- Arquitectura JAMstack con CMS headless: el cliente gestiona el catálogo de forma autónoma desde Sanity Studio sin tocar código
-- Flujo de pedido completo sin pasarela de pago: WhatsApp + Bizum/PayPal gestionado manualmente, adaptado al modelo de negocio del cliente
-- Generación de documentos en servidor (jsPDF + QRCode) adjuntados automáticamente al email de cada pedido
-- Configuración completa de DNS, dominio, verificación de dominio en Resend y Google Search Console
+## Arquitectura y aspectos destacados
+
+* Arquitectura JAMstack con CMS Headless, permitiendo al cliente gestionar el catálogo desde Sanity Studio sin modificar código.
+* Flujo de compra personalizado sin pasarela de pago tradicional, utilizando WhatsApp y pagos mediante Bizum o PayPal adaptados al modelo de negocio.
+* Generación de documentos en servidor con jsPDF y QRCode, adjuntados automáticamente en los emails de cada pedido.
+* Configuración completa de dominio, DNS, despliegue en Vercel, verificación de dominio en Resend e integración con Google Search Console.
 
 ---
 
 ## Flujo de desarrollo
 
-El proyecto se inició en el repositorio personal `ArocaDev/calidad-triple-a`, donde se desarrolló la arquitectura base y las funcionalidades principales.
+El proyecto comenzó en el repositorio personal **ArocaDev/calidad-triple-a**, donde se diseñó la arquitectura inicial y se desarrollaron las funcionalidades principales.
 
-Una vez listo para producción, el repositorio se migró a la cuenta del cliente (`JosepBola/calidad-triple-a`) para conectarlo con su cuenta de Vercel y realizar el despliegue real. Durante la fase de pruebas en producción — comprobando el comportamiento en móvil, distintos tamaños de pantalla y el flujo completo de pedido — los ajustes finales se hicieron directamente desde el repositorio del cliente.
+Una vez preparado para producción, el repositorio se migró a la cuenta del cliente **JosepBola/calidad-triple-a** para conectarlo con su infraestructura de Vercel y realizar el despliegue en producción.
+
+Durante la fase de pruebas se realizaron ajustes finales relacionados con la adaptación a distintos dispositivos, tamaños de pantalla y validación completa del flujo de pedido.
 
 El repositorio personal se mantiene sincronizado como copia de referencia para el portfolio.
 
@@ -70,11 +117,14 @@ El repositorio personal se mantiene sincronizado como copia de referencia para e
 
 ## Nota sobre el diseño
 
-El diseño visual (logotipo, paleta de colores, tipografía e identidad de marca) fue definido y proporcionado por el cliente. Mi trabajo se centró en la implementación técnica, la arquitectura del proyecto y el desarrollo de todas las funcionalidades.
+El diseño visual del proyecto (logotipo, paleta de colores, tipografía e identidad de marca) fue proporcionado por el cliente.
+
+Mi trabajo se centró en la arquitectura del proyecto, desarrollo de funcionalidades, integración de servicios externos y puesta en producción del e-commerce.
 
 ---
 
 ## Autor
 
 Desarrollado por **Alejandro Rodríguez**
-GitHub: [@ArocaDev](https://github.com/ArocaDev)
+
+GitHub: **@ArocaDev**
