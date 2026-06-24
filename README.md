@@ -1,3 +1,52 @@
+# Calidad Triple A — Tienda Online
+
+E-commerce completo para tienda de moda urbana y streetwear, desarrollado como proyecto freelance.
+
+🔗 **[Ver en producción](https://calidad3a.com)**
+
+---
+
+## Stack tecnológico
+
+- **Frontend**: Next.js 15 (App Router), React, TypeScript, Zustand
+- **CMS**: Sanity (gestión de productos, imágenes y contenido)
+- **Emails**: Resend (emails transaccionales automáticos)
+- **Deploy**: Vercel
+- **Dominio y DNS**: Namecheap
+- **Estilos**: CSS puro con variables y media queries
+
+---
+
+## Funcionalidades
+
+- Catálogo dinámico con tres categorías (Ropa, Complementos, Electrónica) conectado a Sanity CMS
+- Filtros por subcategoría, marca, talla, género y precio
+- Ficha de producto con carrusel de imágenes y productos relacionados
+- Carrito de compra con persistencia mediante Zustand
+- Checkout con cálculo automático de gastos de envío por país y envío gratis a partir de 60€ en España
+- Confirmación de pedido por WhatsApp con mensaje preformateado
+- Email automático al vendedor con tres adjuntos: PDF del pedido, PDF de datos de envío y código QR
+- Generación de PDF del pedido descargable para el cliente (jsPDF)
+- SEO básico: sitemap dinámico, metadatos Open Graph, Google Search Console
+- Diseño responsive adaptado a móvil, tablet y escritorio
+- Vercel Web Analytics integrado
+
+---
+
+## Estructura del proyecto
+
+app/
+├── catalogo/          # Catálogo por categoría con filtros
+├── producto/[id]/     # Ficha de producto dinámica
+├── carrito/           # Carrito de compra
+├── pedido/            # Checkout y confirmación
+├── api/pedido/        # API route: email + PDF + QR
+├── quienes-somos/
+├── faq/
+└── aviso-legal/
+sanity/                # Esquemas y cliente de Sanity
+store/                 # Zustand (estado del carrito)
+
 ---
 
 ## Aspectos destacados
@@ -27,5 +76,5 @@ El diseño visual (logotipo, paleta de colores, tipografía e identidad de marca
 
 ## Autor
 
-Desarrollado por **Alejandro Rodríguez**  
+Desarrollado por **Alejandro Rodríguez**
 GitHub: [@ArocaDev](https://github.com/ArocaDev)
