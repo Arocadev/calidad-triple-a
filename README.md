@@ -43,27 +43,20 @@
 ---
 
 ### 📁 Estructura del proyecto
+
+```
 app/
-
 ├── catalogo/          # Catálogo por categoría con filtros
-
 ├── producto/[id]/     # Ficha de producto dinámica
-
 ├── carrito/           # Carrito de compra
-
 ├── pedido/            # Checkout y confirmación
-
 ├── api/pedido/        # API route: email + PDF + QR
-
 ├── quienes-somos/
-
 ├── faq/
-
 └── aviso-legal/
-
 sanity/                # Esquemas y cliente de Sanity
-
 store/                 # Zustand (estado del carrito)
+```
 
 ---
 
@@ -130,27 +123,20 @@ El diseño visual (logotipo, paleta de colores, tipografía e identidad de marca
 ---
 
 ### 📁 Project Structure
+
+```
 app/
-
 ├── catalogo/          # Category catalog with filters
-
 ├── producto/[id]/     # Dynamic product page
-
 ├── carrito/           # Shopping cart
-
 ├── pedido/            # Checkout and confirmation
-
 ├── api/pedido/        # API route: email + PDF + QR
-
 ├── quienes-somos/
-
 ├── faq/
-
 └── aviso-legal/
-
 sanity/                # Sanity schemas and client
-
 store/                 # Zustand (cart state)
+```
 
 ---
 
