@@ -2,7 +2,7 @@
 
 > E-commerce completo para tienda de moda urbana y streetwear | Full e-commerce for urban fashion & streetwear store
 
-🔗 **[Ver en producción / Live](https://calidad3a.com)**
+> 🔗 [calidad3a.com](https://calidad3a.com)
 ---
 
 ## 🇪🇸 Español
